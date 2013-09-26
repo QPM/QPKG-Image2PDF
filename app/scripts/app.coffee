@@ -23,6 +23,10 @@ app.config ($routeProvider, $httpProvider) ->
     templateUrl: "views/photo.html"
     controller: "PhotoCtrl"
   )
+  .when("/photo/:tab",
+    templateUrl: "views/photo.html"
+    controller: "PhotoCtrl"
+  )
   .when("/template",
     templateUrl: "views/template.html"
     controller: "TemplateCtrl"

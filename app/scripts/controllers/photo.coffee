@@ -1,7 +1,16 @@
 app.controller "PhotoCtrl", ($scope, $routeParams, PhotoSvc, SelectSvc) ->
-  $scope.items = PhotoSvc.fetch()
+  $scope.items = []
   $scope.selected = SelectSvc.fetch()
   $scope.main_width = 1000
+
+  $scope.init = () ->
+    console.log 'test'
+    console.log $routeParams
+    if $routeParams.tab
+      switch $routeParams.tab
+        when 'album' then $scope.items = []
+        when 'selected' then $scope.items = SelectSvc.fetch()
+        else $scope.items = PhotoSvc.fetch()
 
   $scope.select = (photo) ->
     photo.hover = off

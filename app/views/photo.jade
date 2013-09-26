@@ -7,7 +7,7 @@ html
       .selected
         .photo.delete(ng-repeat="item in selected",ng-class="{delete: item.hover}",ng-click="select(item)",ng-mouseover="item.hover=true",ng-mouseleave="item.hover=false",style="background-image:url({{item.src}});")
           .checkbox
-    #menu
+    #menu(ng-init="init()")
       a 所有相片
       a 相簿
       a 已選取照片
