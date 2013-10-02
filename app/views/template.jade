@@ -1,9 +1,12 @@
 html
   body
-    .hero-unit
-      h1 &apos;Allo&comma; &apos;Allo&excl;
-      p You now have
-      ul
-        li(ng-repeat='thing in awesomeThings') &lcub;&lcub;thing&rcub;&rcub;
-      p installed&period;
-      h3 Enjoy coding&excl; - Template
+    #toolbar
+      .logo
+      .templates
+      .next
+        a(href="#/template") OUTPUT
+    #menu(ng-init="init()")
+      a(href="#/photo") 預覽畫面
+      a(href="#/album") 更多樣板
+    #main.template
+      iframe(src="./templates/long/index.html",scrolling="no")

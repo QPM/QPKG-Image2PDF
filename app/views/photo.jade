@@ -2,15 +2,19 @@ html
   body
     #toolbar
       .logo
-        p 已選擇 {{selected.length}}
-        a(ng-click="clear()") 清除
+        
       .selected
-        .photo.delete(ng-repeat="item in selected",ng-class="{delete: item.hover}",ng-click="select(item)",ng-mouseover="item.hover=true",ng-mouseleave="item.hover=false",style="background-image:url({{item.src}});")
+        .photo.delete(ng-repeat="item in selected | limitTo:6",ng-class="{delete: item.hover}",ng-click="select(item)",ng-mouseover="item.hover=true",ng-mouseleave="item.hover=false",style="background-image:url({{item.src}});")
           .checkbox
+      .select_info
+        span 已選擇 {{selected.length}}
+        a(ng-click="clear()") [清除]
+      .next
+        a(href="#/template") NEXT
     #menu(ng-init="init()")
-      a 所有相片
-      a 相簿
-      a 已選取照片
+      a(href="#/photo") 所有相片
+      a(href="#/album") 相簿
+      a(href="#/selected") 已選取照片
     #main
       .photo(ng-repeat="item in items | layout:main_width",ng-class="{hover: item.hover, active:item.selected}",ng-mouseover="item.hover=true",ng-mouseleave="item.hover=false",ng-click="select(item)",style="background-image:url({{item.src}});width:{{item.view}}px")
         .checkbox

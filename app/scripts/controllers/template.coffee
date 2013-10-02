@@ -1,2 +1,2 @@
-app.controller "TemplateCtrl", ($scope) ->
-  $scope.awesomeThings = ["HTML5 Boilerplate", "AngularJS", "Karma"]
+app.controller "TemplateCtrl", ($scope, SelectSvc) ->
+  window.selected = SelectSvc.fetch()

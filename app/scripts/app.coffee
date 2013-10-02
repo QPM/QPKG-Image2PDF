@@ -19,18 +19,28 @@ app.filter 'layout', () ->
 
 app.config ($routeProvider, $httpProvider) ->
   $routeProvider
-  .when("/",
+  .when("/photo",
     templateUrl: "views/photo.html"
     controller: "PhotoCtrl"
+    resolve:
+      Tab: -> 'photo'
   )
-  .when("/photo/:tab",
+  .when("/album",
     templateUrl: "views/photo.html"
     controller: "PhotoCtrl"
+    resolve:
+      Tab: -> 'album'
+  )
+  .when("/selected",
+    templateUrl: "views/photo.html"
+    controller: "PhotoCtrl"
+    resolve:
+      Tab: -> 'selected'
   )
   .when("/template",
     templateUrl: "views/template.html"
     controller: "TemplateCtrl"
   )
-  .otherwise redirectTo: "/"
+  .otherwise redirectTo: "/photo"
 
   delete $httpProvider.defaults.headers.common['X-Requested-With']
