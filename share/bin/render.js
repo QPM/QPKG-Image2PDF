@@ -4,12 +4,6 @@ var system = require('system'),
     web = require('webpage'),
     fs = require('fs');
 
-
-// page.content = template_data;
-// page.onConsoleMessage = function(msg, lineNum, sourceId) {
-//     console.log("CONSOLE: " + msg + ' (from line #' + lineNum + ' in "' + sourceId + '")');
-// };
-
 var images = [
   'http://localhost/photo/02.jpg',
   'http://localhost/photo/03.jpg',
@@ -22,95 +16,45 @@ var images = [
 ];
 
 var page = web.create();
-var queue = 0;
+page.onConsoleMessage = function(msg, lineNum, sourceId) {
+    console.log("Tmplate: " + msg);
+};
 page.open(folder+'/index.html', function(status) {
   console.log('Open Folder: ' + folder +'('+ status +')');
 
-  index = 0;
-  while(images.length>0){
-    index++;
-    images = page.evaluate(function(images){
-      $('.image').css('background-image',function(index){
-        image = images.shift();
-        return image ? "url('"+image+"')" : '';
-      });
-      return images;
+  page.includeJs('http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js', function(){
+    page.evaluate(function(images){
+      var temp = $('.document').detach();
+      while(images.length>0){
+        var doc = temp.clone();
+        $('.image',doc).css('background-image',function(index){
+          image = images.shift();
+          console.log(image);
+          return image ? "url('"+image+"')" : '';
+        })
+        doc.appendTo('body');
+        $('<div />').css('page-break-inside','avoid').appendTo('body');
+      }
     },images);
 
-    console.log('Write: output'+index+'.html');
-    fs.write(folder+'/output'+index+'.html', page.content);
-    queue++;
+    var output_file = folder+'/output.html';
+    console.log('Write: '+output_file);
+    fs.write(output_file, page.content);
 
-    (function(index){
-      var output = web.create();
-      output.viewportSize = {width:595, height : 842};
-      output.clipRect = {
-        top: 0,
-        left: 0,
-        width: output.viewportSize.width,
-        height: output.viewportSize.height
-      };
-      output.open(folder+'/output'+index+'.html', function(status){
-        console.log('Open: /output'+index+'.html ('+ status +')');
-        
-        setTimeout(function(){
-          console.log('Render: tmp/test'+index+'.png');
-          output.render('tmp/test'+index+'.png');
+    var output = web.create();
+    output.paperSize = { format: 'A4', orientation: 'portrait', border: '0' };
+    output.open(output_file, function(status){
+      console.log('Open: '+output_file+' ('+ status +')');
+      
+      setTimeout(function(){
+        var render_file = folder+'/output.pdf'
+        console.log('Render: '+render_file);
+        output.render(render_file);
 
-          output.close();
-
-          queue--;
-          if(queue<=0) phantom.exit();
-        },500);
-      });
-    })(index);
-  }
-  // page.onResourceReceived = function(response){
-  //   if(response.stage=='end'){
-  //     loaded--;
-  
-  //     setTimeout(function(){
-  //       if(loaded<=0){
-  //         page.clipRect = {
-  //           top: 0,
-  //           left: 0,
-  //           width: page.viewportSize.width,
-  //           height: page.viewportSize.height
-  //         };
-
-  //         page.render('tmp/test1.png');
-  //         phantom.exit();
-  //       }
-  //     },1000);
-  //   }
-  // }
+        output.close();
+        page.close();
+        phantom.exit();
+      },50*images.length);
+    });
+  });
 });
-
-// setTimeout((function(){ //handle content updated
-//     var images = [
-//       'http://localhost/photo/02.jpg',
-//       'http://localhost/photo/03.jpg',
-//       'http://localhost/photo/04.jpg',
-//       'http://localhost/photo/05.jpg',
-//       'http://localhost/photo/06.jpg'
-//     ];
-//     var result = page.evaluate(function(images){
-//         window.loadImages(images);
-//     },images);
-// }()),2000);
-
-// setTimeout(function(){
-//     var height = page.evaluate(function(){
-//         return document.body.clientHeight;
-//     });
-//     for(var i = 0 ,currentHeight = 0 ; currentHeight < height ; currentHeight+= page.viewportSize.height,++i ){
-//         page.clipRect = {
-//             top:   currentHeight ,
-//             left:   0,
-//             width:  page.viewportSize.width,
-//             height: page.viewportSize.height
-//         };
-//         page.render('tmp/test'+i+'.png');
-//     }
-//     phantom.exit();
-// },4000);

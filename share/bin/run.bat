@@ -1,6 +1,0 @@
-#phantomjs render.js
-
-#convert -page a4 tmp/test0.png tmp/test1.png tmp/test2.png tmp/test3.png tmp/test4.png tmp/test5.png  test.pdf
-
-phantomjs render.js "file:///C:/docs/test_image/images/8938506685_0557e3236d_o.jpg" "file:///C:/docs/test_image/images/484108_10150977371527736_2134177966_n.jpg" "file:///C:/docs/test_image/images/8939134062_b50583e3c3_o.jpg" "file:///C:/docs/test_image/images/9021083679_3cf9097214_b.jpg" "file:///C:/docs/test_image/images/558168_10150977342622736_1174794896_n.jpg" "file:///C:/docs/test_image/images/8938899282_f2f16e845b_b.jpg" "file:///C:/docs/test_image/images/9065823531_40bac18994_o.jpg" "file:///C:/docs/test_image/images/522190_10151507003450271_1936132883_n.jpg" "file:///C:/docs/test_image/images/9067252951_8714b21047_o.jpg" "file:///C:/docs/test_image/images/548137_10150977961467736_1007846769_n.jpg" "file:///C:/docs/test_image/images/9126741936_4cb4e8fb4f_o.png" "file:///C:/docs/test_image/2012-04-21%2011.00.19.jpg" 1
-convert -page a4 tmp/*.png test.pdf

@@ -3,14 +3,19 @@ body
   padding: 0px
   margin: 0px
 
-.main
-  width: 595px - 20px
-  height: 842px
-  padding: 0px 10px
+page_width=210mm
+page_height=297mm
+
+.document
+  width: page_width
+  height: page_height
+  padding: 2mm
 
 .image
-  height: (842px/5) - 10px
-  margin-top: 10px
+  height: ((page_height - 2) / 5) - 2
+  margin-bottom: 2mm
   background-size: cover
   background-position: center center
   border: none
+  &:last-child
+    margin-bottom: 0
