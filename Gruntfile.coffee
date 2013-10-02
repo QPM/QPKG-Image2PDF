@@ -3,7 +3,7 @@ module.exports = (grunt) ->
 
   appConfig =
     dev: "app"
-    dist: "."
+    dist: "share/web"
 
   # Project configuration.
   grunt.initConfig
@@ -18,9 +18,9 @@ module.exports = (grunt) ->
       dist:
         files: [
           expand: true
-          cwd: "<%= app.dev %>/scripts"
-          src: "{,*/}*.coffee"
-          dest: "<%= app.dist %>/scripts"
+          cwd: "<%= app.dev %>"
+          src: "{,**/}*.coffee"
+          dest: "<%= app.dist %>"
           ext: ".js"
         ]
     # Put Jade
@@ -31,7 +31,7 @@ module.exports = (grunt) ->
         files: [
           expand: true
           cwd: "<%= app.dev %>"
-          src: "{,*/}*.jade"
+          src: "{,**/}*.jade"
           dest: "<%= app.dist %>"
           ext: ".html"
         ]
@@ -42,15 +42,23 @@ module.exports = (grunt) ->
       dist:
         files: [
           expand: true
-          cwd: "<%= app.dev %>/styles"
-          src: "{,*/}*.styl"
-          dest: "<%= app.dist %>/styles"
+          cwd: "<%= app.dev %>"
+          src: "{,**/}*.styl"
+          dest: "<%= app.dist %>"
           ext: ".css"
         ]
     concurrent:
       dist: ["jade","coffee","stylus"]
+    clean: ["share/web"]
+    copy: 
+      main: 
+        files: [
+          {expand: true, src: ['bower_components/**'], dest: 'share/web/'}
+          {expand: true, cwd:'app/', src: ['images/**'], dest: 'share/web/'}
+          {expand: true, cwd:'app/', src: ['*.icon'], dest: 'share/web/'}
+        ]
     watch:
       files: ["**/*.jade", "**/*.coffee", "**/*.styl"]
       tasks: ["concurrent:dist"]
 
-  grunt.registerTask "default", ["concurrent:dist", "watch"]
+  grunt.registerTask "default", ["clean","copy","concurrent:dist", "watch"]

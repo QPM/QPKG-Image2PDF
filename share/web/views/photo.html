@@ -1,0 +1,21 @@
+
+<html>
+  <body>
+    <div id="toolbar">
+      <div class="logo"></div>
+      <div class="selected">
+        <div ng-repeat="item in selected | limitTo:6" ng-class="{delete: item.hover}" ng-click="select(item)" ng-mouseover="item.hover=true" ng-mouseleave="item.hover=false" style="background-image:url({{item.src}});" class="photo delete">
+          <div class="checkbox"></div>
+        </div>
+      </div>
+      <div class="select_info"><span>已選擇 {{selected.length}}</span><a ng-click="clear()">[清除]</a></div>
+      <div class="next"><a href="#/template">NEXT</a></div>
+    </div>
+    <div id="menu" ng-init="init()"><a href="#/photo">所有相片</a><a href="#/album">相簿</a><a href="#/selected">已選取照片</a></div>
+    <div id="main">
+      <div ng-repeat="item in items | layout:main_width" ng-class="{hover: item.hover, active:item.selected}" ng-mouseover="item.hover=true" ng-mouseleave="item.hover=false" ng-click="select(item)" style="background-image:url({{item.src}});width:{{item.view}}px" class="photo">
+        <div class="checkbox"></div>
+      </div>
+    </div>
+  </body>
+</html>
