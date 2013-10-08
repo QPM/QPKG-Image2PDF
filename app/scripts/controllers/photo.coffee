@@ -13,6 +13,9 @@ app.controller "PhotoCtrl", ($scope, $routeParams, PhotoSvc, SelectSvc, UserSvc,
     $scope.user = UserSvc.info()
     #PhotoSvc.reset_sid($scope.user.sid) if UserSvc.status() is 'login'
 
+  $scope.toolbar_toggle = () ->
+    $scope.toolbar = !$scope.toolbar
+
   $scope.select = (photo) ->
     photo.hover = off
     if photo.selected
@@ -25,7 +28,7 @@ app.controller "PhotoCtrl", ($scope, $routeParams, PhotoSvc, SelectSvc, UserSvc,
     SelectSvc.clear()
 
   (listener = ()->
-    width = $(window).width() - 200 - 5
+    width = $('#main').width()
     if width isnt $scope.box.width
       $scope.box.width = width
       $scope.$apply() unless $scope.$$phase

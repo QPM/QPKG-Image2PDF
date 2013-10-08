@@ -2,7 +2,7 @@ app = angular.module("gruntNgApp", [])
 
 app.filter 'layout', () ->
   (input, box) ->
-    width_capacity = box.width
+    width_capacity = box.width - 5
     width_loaded = 0
     queue = []
     angular.forEach input, (value, key)->
@@ -17,7 +17,7 @@ app.filter 'layout', () ->
       if width_loaded >= width_capacity
         item.dis_width = item.dis_width/width_loaded*width_capacity for item in queue
         queue = []
-        width_capacity = box.width
+        width_capacity = box.width - 5
         width_loaded = 0
 
     item.dis_width = item.dis_width/width_loaded*width_capacity for item in queue

@@ -1,6 +1,12 @@
 html
   body
-    .wrap(ng-show="user.status=='login'",ng-class="{show-toolbar: toolbar}")
+    .wrap(ng-show="user.status=='login'",ng-class="{'show-toolbar': toolbar}")
+      #menu
+        .wrap
+          a(href="#/photo") 所有相片
+          a(href="#/album") 相簿
+          a(href="#/selected") 已選取照片
+        .toolbar-toggle(ng-class="{checked: toolbar}",ng-click="toolbar_toggle()")
       #toolbar
         .logo
           
@@ -8,16 +14,10 @@ html
           .photo.delete(ng-repeat="item in selected | limitTo:6",ng-class="{delete: item.hover}",ng-click="select(item)",ng-mouseover="item.hover=true",ng-mouseleave="item.hover=false",style="background-image:url({{item.src}});")
             .checkbox
         .select_info
-          span 已選擇 {{selected.length}}
-          a(ng-click="clear()") [清除]
+          a.btn_blue(href="#/selected") {{selected.length}} Selected
+          a.btn_red(ng-click="clear()") Delete All
         .next
-          a(href="#/template") NEXT
-      #menu
-        .wrap
-          a(href="#/photo") 所有相片
-          a(href="#/album") 相簿
-          a(href="#/selected") 已選取照片
-        .toolbar-toggle(ng-class="{checked: toolbar}",ng-click="toolbar_toggle()")
+          a.btn_blue(href="#/template") Next
       #main
         .photo(ng-repeat="item in items | layout:box",ng-class="{hover: item.hover, active:item.selected}",ng-mouseover="item.hover=true",ng-mouseleave="item.hover=false",ng-click="select(item)",style="background-image:url({{item.src}});width:{{item.dis_width}}px;height:{{item.dis_height}}px")
           .checkbox
