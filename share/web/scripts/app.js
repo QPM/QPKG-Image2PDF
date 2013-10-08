@@ -5,7 +5,7 @@ app = angular.module("gruntNgApp", []);
 app.filter('layout', function() {
   return function(input, box) {
     var item, queue, width_capacity, width_loaded, _i, _len;
-    width_capacity = box.width;
+    width_capacity = box.width - 5;
     width_loaded = 0;
     queue = [];
     angular.forEach(input, function(value, key) {
@@ -25,7 +25,7 @@ app.filter('layout', function() {
           item.dis_width = item.dis_width / width_loaded * width_capacity;
         }
         queue = [];
-        width_capacity = box.width;
+        width_capacity = box.width - 5;
         return width_loaded = 0;
       }
     });

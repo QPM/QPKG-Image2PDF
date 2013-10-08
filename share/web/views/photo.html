@@ -1,7 +1,11 @@
 
 <html>
   <body>
-    <div ng-show="user.status=='login'" ng-class="{show-toolbar: toolbar}" class="wrap">
+    <div ng-show="user.status=='login'" ng-class="{'show-toolbar': toolbar}" class="wrap">
+      <div id="menu">
+        <div class="wrap"><a href="#/photo">所有相片</a><a href="#/album">相簿</a><a href="#/selected">已選取照片</a></div>
+        <div ng-class="{checked: toolbar}" ng-click="toolbar_toggle()" class="toolbar-toggle"></div>
+      </div>
       <div id="toolbar">
         <div class="logo"></div>
         <div class="selected">
@@ -9,12 +13,8 @@
             <div class="checkbox"></div>
           </div>
         </div>
-        <div class="select_info"><span>已選擇 {{selected.length}}</span><a ng-click="clear()">[清除]</a></div>
-        <div class="next"><a href="#/template">NEXT</a></div>
-      </div>
-      <div id="menu">
-        <div class="wrap"><a href="#/photo">所有相片</a><a href="#/album">相簿</a><a href="#/selected">已選取照片</a></div>
-        <div ng-class="{checked: toolbar}" ng-click="toolbar_toggle()" class="toolbar-toggle"></div>
+        <div class="select_info"><a href="#/selected" class="btn_blue">{{selected.length}} Selected</a><a ng-click="clear()" class="btn_red">Delete All</a></div>
+        <div class="next"><a href="#/template" class="btn_blue">Next</a></div>
       </div>
       <div id="main">
         <div ng-repeat="item in items | layout:box" ng-class="{hover: item.hover, active:item.selected}" ng-mouseover="item.hover=true" ng-mouseleave="item.hover=false" ng-click="select(item)" style="background-image:url({{item.src}});width:{{item.dis_width}}px;height:{{item.dis_height}}px" class="photo">

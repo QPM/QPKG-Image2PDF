@@ -11,6 +11,9 @@ app.controller("PhotoCtrl", function($scope, $routeParams, PhotoSvc, SelectSvc, 
   $scope.$watch(UserSvc.status, function() {
     return $scope.user = UserSvc.info();
   });
+  $scope.toolbar_toggle = function() {
+    return $scope.toolbar = !$scope.toolbar;
+  };
   $scope.select = function(photo) {
     photo.hover = false;
     if (photo.selected) {
@@ -25,7 +28,7 @@ app.controller("PhotoCtrl", function($scope, $routeParams, PhotoSvc, SelectSvc, 
   };
   return (listener = function() {
     var data, item, width, _i, _len;
-    width = $(window).width() - 200 - 5;
+    width = $('#main').width();
     if (width !== $scope.box.width) {
       $scope.box.width = width;
       if (!$scope.$$phase) {
