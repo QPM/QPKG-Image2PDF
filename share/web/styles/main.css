@@ -5,7 +5,14 @@ iframe{width:595px;height:842px;border:0;margin:0 auto}
 .photo.hover .checkbox{border:4px solid #666;background-image:url("../images/checkbox_no.png")}
 .photo.active .checkbox{border:4px solid #0f0;background-image:url("../images/checkbox_yes.png")}
 .photo.delete .checkbox{border:4px solid #f00;background-image:url("../images/checkbox_del.png")}
-#toolbar{height:100%;width:200px;position:fixed;right:0;background:#f00;}
+#headbar{position:fixed;top:0;left:0;z-index:8;height:41px;width:100%;background:url("../images/header_bg.png")}
+#login{height:240px;width:230px;margin:0 auto;margin-top:88px}
+#menu{position:fixed;top:41px;left:0;z-index:7;height:43px;width:100%;background:url("../images/menu_bg.png");}
+#menu a{padding:8px 24px 12px 24px;cursor:pointer}
+#menu .toolbar-toggle{width:27px;height:24px;position:absolute;right:5px;top:19px/2;background:url("../images/toolbar_toggle.png");}
+#menu .toolbar-toggle.checked{background:url("../images/toolbar_toggle_checked.png")}
+#toolbar{height:100%;width:202px;position:fixed;top:84px;right:-202px;z-index:6;transition:right .5s;background:#d8d8d8;}
+.show-toolbar #toolbar{right:0}
 #toolbar .logo{width:100%;height:66px}
 #toolbar .selected{width:100%;padding-top:66px;overflow-y:scroll;}
 #toolbar .selected .photo{width:60px;height:60px;}
@@ -13,9 +20,8 @@ iframe{width:595px;height:842px;border:0;margin:0 auto}
 #toolbar .next{width:100%;position:absolute;bottom:0;left:0;padding-bottom:5px;}
 #toolbar .next a{display:block;margin:0 5px;padding:12px 0 13px;background:#2980b9;color:#fff;line-height:20px;font-size:17px;text-align:center;}
 #toolbar .next a:hover{background:#3498db}
-#menu{width:100%;height:48px;}
-#menu a{padding:8px 24px 12px 24px;cursor:pointer}
-#main{margin-right:200px;background:#aaa;}
+#main{margin-right:0;transition:margin .5s;background:#aaa;}
+.show-toolbar #main{margin-right:202px}
 #main .photo{height:300px;margin-left:5px;margin-top:5px;}
 #main .photo .checkbox{height:292px}
 #main.template{display:table-cell;vertical-align:middle;text-align:center}

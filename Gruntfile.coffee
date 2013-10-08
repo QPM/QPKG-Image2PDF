@@ -55,10 +55,20 @@ module.exports = (grunt) ->
         files: [
           {expand: true, src: ['bower_components/**'], dest: 'share/web/'}
           {expand: true, cwd:'app/', src: ['images/**'], dest: 'share/web/'}
-          {expand: true, cwd:'app/', src: ['*.icon'], dest: 'share/web/'}
+          {expand: true, cwd:'app/', src: ['*.icon','*.php','**/*.js','**/*.css'], dest: 'share/web/'}
         ]
     watch:
-      files: ["**/*.jade", "**/*.coffee", "**/*.styl"]
-      tasks: ["concurrent:dist"]
+      jade:
+        files: ["**/*.jade"]
+        tasks: ["jade"]
+      coffee:
+        files: ["**/*.coffee"]
+        tasks: ["coffee"]
+      styl:
+        files: ["**/*.styl"]
+        tasks: ["stylus"]
+      other:
+        files: ["**/*.icon", "**/*.php"]
+        tasks: ["copy"]
 
   grunt.registerTask "default", ["clean","copy","concurrent:dist", "watch"]

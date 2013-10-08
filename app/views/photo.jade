@@ -1,20 +1,23 @@
 html
   body
-    #toolbar
-      .logo
-        
-      .selected
-        .photo.delete(ng-repeat="item in selected | limitTo:6",ng-class="{delete: item.hover}",ng-click="select(item)",ng-mouseover="item.hover=true",ng-mouseleave="item.hover=false",style="background-image:url({{item.src}});")
+    .wrap(ng-show="user.status=='login'",ng-class="{show-toolbar: toolbar}")
+      #toolbar
+        .logo
+          
+        .selected
+          .photo.delete(ng-repeat="item in selected | limitTo:6",ng-class="{delete: item.hover}",ng-click="select(item)",ng-mouseover="item.hover=true",ng-mouseleave="item.hover=false",style="background-image:url({{item.src}});")
+            .checkbox
+        .select_info
+          span 已選擇 {{selected.length}}
+          a(ng-click="clear()") [清除]
+        .next
+          a(href="#/template") NEXT
+      #menu
+        .wrap
+          a(href="#/photo") 所有相片
+          a(href="#/album") 相簿
+          a(href="#/selected") 已選取照片
+        .toolbar-toggle(ng-class="{checked: toolbar}",ng-click="toolbar_toggle()")
+      #main
+        .photo(ng-repeat="item in items | layout:box",ng-class="{hover: item.hover, active:item.selected}",ng-mouseover="item.hover=true",ng-mouseleave="item.hover=false",ng-click="select(item)",style="background-image:url({{item.src}});width:{{item.dis_width}}px;height:{{item.dis_height}}px")
           .checkbox
-      .select_info
-        span 已選擇 {{selected.length}}
-        a(ng-click="clear()") [清除]
-      .next
-        a(href="#/template") NEXT
-    #menu(ng-init="init()")
-      a(href="#/photo") 所有相片
-      a(href="#/album") 相簿
-      a(href="#/selected") 已選取照片
-    #main
-      .photo(ng-repeat="item in items | layout:main_width",ng-class="{hover: item.hover, active:item.selected}",ng-mouseover="item.hover=true",ng-mouseleave="item.hover=false",ng-click="select(item)",style="background-image:url({{item.src}});width:{{item.view}}px")
-        .checkbox

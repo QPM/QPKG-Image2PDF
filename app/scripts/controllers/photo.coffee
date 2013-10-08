@@ -1,13 +1,17 @@
-app.controller "PhotoCtrl", ($scope, $routeParams, PhotoSvc, SelectSvc, Tab) ->
+app.controller "PhotoCtrl", ($scope, $routeParams, PhotoSvc, SelectSvc, UserSvc, Tab) ->
   $scope.items = []
-  $scope.selected = SelectSvc.fetch()
-  $scope.main_width = 1000
+  $scope.selected = [] #SelectSvc.photo()
+  $scope.box =
+    width: 1000
+    height: 300
 
-  $scope.init = () ->
-    switch Tab
-      when 'album' then $scope.items = []
-      when 'selected' then $scope.items = SelectSvc.fetch()
-      else $scope.items = PhotoSvc.fetch()
+  $scope.user = UserSvc.info()
+
+  $scope.toolbar = false
+
+  $scope.$watch UserSvc.status, () ->
+    $scope.user = UserSvc.info()
+    #PhotoSvc.reset_sid($scope.user.sid) if UserSvc.status() is 'login'
 
   $scope.select = (photo) ->
     photo.hover = off
@@ -15,14 +19,29 @@ app.controller "PhotoCtrl", ($scope, $routeParams, PhotoSvc, SelectSvc, Tab) ->
       SelectSvc.del(photo)
     else
       SelectSvc.add(photo)
+      $scope.toolbar = true
 
   $scope.clear = () ->
     SelectSvc.clear()
 
-  (listener_width = ()->
+  (listener = ()->
     width = $(window).width() - 200 - 5
-    if width isnt $scope.main_width
-      $scope.main_width = width
+    if width isnt $scope.box.width
+      $scope.box.width = width
       $scope.$apply() unless $scope.$$phase
-    setTimeout listener_width, 1000
+
+    if $scope.items.length < 1 and UserSvc.status() is 'login'
+      switch Tab
+        when 'album'
+          data = PhotoSvc.album(1)
+          console.log data
+        when 'selected'
+          data = SelectSvc.fetch()
+        else
+          data = PhotoSvc.photo(1)
+      if data instanceof Array
+        $scope.items.push(item) for item in data
+        $scope.$apply() unless $scope.$$phase
+
+    setTimeout listener, 1000
   )()

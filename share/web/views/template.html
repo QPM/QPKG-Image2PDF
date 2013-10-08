@@ -4,11 +4,11 @@
     <div id="toolbar">
       <div class="logo"></div>
       <div class="templates"></div>
-      <div class="next"><a href="#/template">OUTPUT</a></div>
+      <div class="next"><a ng-click="output()" ng-switch="status"><span ng-switch-when="download">Download</span><span ng-switch-when="progress">Progress...</span><span ng-switch-when="output">OUTPUT</span></a></div>
     </div>
     <div id="menu" ng-init="init()"><a href="#/photo">預覽畫面</a><a href="#/album">更多樣板</a></div>
     <div id="main" class="template">
-      <iframe src="./templates/long/index.html" scrolling="no"></iframe>
+      <iframe src="./templates/long/index.html" ngload="pageLoad($event)" scrolling="no"></iframe>
     </div>
   </body>
 </html>

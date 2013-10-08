@@ -24,20 +24,51 @@
     <script src="bower_components/angular-resource/angular-resource.js"></script>
     <script src="bower_components/angular-cookies/angular-cookies.js"></script>
     <script src="bower_components/angular-sanitize/angular-sanitize.js"></script>
-    <!-- endbuild-->
-    <!-- build:css(.tmp) styles/main.css-->
-    <link rel="stylesheet" href="styles/main.css">
-    <!-- endbuild-->
+    <script src="scripts/ezEncode.js"></script>
   </head>
   <body ng-app="gruntNgApp">
+    <div ng-controller="UserCtrl" class="header">
+      <div id="headbar">
+        <div class="title">Image2PDF</div>
+        <div class="user">
+          <div class="photo"></div>
+          <div class="naem">Admin</div>
+          <div class="more"></div>
+        </div>
+      </div>
+      <div id="login" ng-hide="user.status=='login'">
+        <form ng-submit="login()" class="form-horizontal">
+          <div class="input input-username">
+            <div class="left"></div>
+            <div class="right"></div><i class="icon-user"></i>
+            <input id="username" type="text" placeholder="Username" ng-model="username">
+          </div>
+          <div class="input input-password">
+            <div class="left"></div>
+            <div class="right"></div><i class="icon-lock"></i>
+            <input id="password" type="password" placeholder="Password" ng-model="password">
+          </div>
+          <div ng-show="user.status=='failed'" class="message"><span>*Invalid username or password</span></div>
+          <div class="toolbar">
+            <label id="remember" class="remember pull-left">Remember me</label>
+            <button id="login-submit" type="submit" class="pull-right">SIGN IN</button>
+          </div>
+        </form>
+      </div>
+    </div>
     <div ng-view="" class="container"></div>
     <!-- build:js scripts/scripts.js-->
     <script src="scripts/app.js"></script>
     <script src="scripts/photo_svc.js"></script>
     <script src="scripts/select_svc.js"></script>
+    <script src="scripts/user_svc.js"></script>
     <script src="scripts/controllers/photo.js"></script>
     <script src="scripts/controllers/template.js"></script>
     <script src="scripts/controllers/share.js"></script>
+    <!-- endbuild-->
+    <!-- endbuild-->
+    <!-- build:css(.tmp) styles/main.css-->
+    <link rel="stylesheet" href="styles/main.css">
     <!-- endbuild-->
   </body>
 </html>

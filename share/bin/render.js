@@ -1,26 +1,24 @@
 // ./bin/phantomjs ../bin/render.js ./templates/long/index.html
 var system = require('system'),
-    folder = system.args[1],
+    template = system.args[1],
+    target = system.args[2],
     web = require('webpage'),
+    system = require('system'),
     fs = require('fs');
 
-var images = [
-  'http://localhost/photo/02.jpg',
-  'http://localhost/photo/03.jpg',
-  'http://localhost/photo/04.jpg',
-  'http://localhost/photo/05.jpg',
-  'http://localhost/photo/06.jpg',
-  'http://localhost/photo/07.jpg',
-  'http://localhost/photo/08.jpg',
-  'http://localhost/photo/09.jpg'
-];
+var images = JSON.parse(fs.read(target));
+target = /(.+)\./i.exec(target)[1];
+
+fs.copyTree(template, target + system.pid);
+template = target + system.pid;
 
 var page = web.create();
 page.onConsoleMessage = function(msg, lineNum, sourceId) {
     console.log("Tmplate: " + msg);
 };
-page.open(folder+'/index.html', function(status) {
-  console.log('Open Folder: ' + folder +'('+ status +')');
+
+page.open(template+'/index.html', function(status) {
+  console.log('Open target: ' + template +'('+ status +')');
 
   page.includeJs('http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js', function(){
     page.evaluate(function(images){
@@ -37,7 +35,7 @@ page.open(folder+'/index.html', function(status) {
       }
     },images);
 
-    var output_file = folder+'/output.html';
+    var output_file = template+'/output.html';
     console.log('Write: '+output_file);
     fs.write(output_file, page.content);
 
@@ -47,13 +45,14 @@ page.open(folder+'/index.html', function(status) {
       console.log('Open: '+output_file+' ('+ status +')');
       
       setTimeout(function(){
-        var render_file = folder+'/output.pdf'
+        var render_file = target+'.pdf'
         console.log('Render: '+render_file);
         output.render(render_file);
 
         output.close();
         page.close();
         phantom.exit();
+        fs.removeTree(template);
       },50*images.length);
     });
   });

@@ -4,9 +4,12 @@ html
       .logo
       .templates
       .next
-        a(href="#/template") OUTPUT
+        a(ng-click="output()", ng-switch="status")
+          span(ng-switch-when="download") Download
+          span(ng-switch-when="progress") Progress...
+          span(ng-switch-when="output") OUTPUT
     #menu(ng-init="init()")
       a(href="#/photo") 預覽畫面
       a(href="#/album") 更多樣板
     #main.template
-      iframe(src="./templates/long/index.html",scrolling="no")
+      iframe(src="./templates/long/index.html",ngload="pageLoad($event)",scrolling="no")

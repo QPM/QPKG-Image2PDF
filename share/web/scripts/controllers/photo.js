@@ -1,39 +1,60 @@
-app.controller("PhotoCtrl", function($scope, $routeParams, PhotoSvc, SelectSvc, Tab) {
-  var listener_width;
+app.controller("PhotoCtrl", function($scope, $routeParams, PhotoSvc, SelectSvc, UserSvc, Tab) {
+  var listener;
   $scope.items = [];
-  $scope.selected = SelectSvc.fetch();
-  $scope.main_width = 1000;
-  $scope.init = function() {
-    switch (Tab) {
-      case 'album':
-        return $scope.items = [];
-      case 'selected':
-        return $scope.items = SelectSvc.fetch();
-      default:
-        return $scope.items = PhotoSvc.fetch();
-    }
+  $scope.selected = [];
+  $scope.box = {
+    width: 1000,
+    height: 300
   };
+  $scope.user = UserSvc.info();
+  $scope.toolbar = false;
+  $scope.$watch(UserSvc.status, function() {
+    return $scope.user = UserSvc.info();
+  });
   $scope.select = function(photo) {
     photo.hover = false;
     if (photo.selected) {
       return SelectSvc.del(photo);
     } else {
-      return SelectSvc.add(photo);
+      SelectSvc.add(photo);
+      return $scope.toolbar = true;
     }
   };
   $scope.clear = function() {
     return SelectSvc.clear();
   };
-  return (listener_width = function() {
-    var width;
+  return (listener = function() {
+    var data, item, width, _i, _len;
     width = $(window).width() - 200 - 5;
-    if (width !== $scope.main_width) {
-      $scope.main_width = width;
+    if (width !== $scope.box.width) {
+      $scope.box.width = width;
       if (!$scope.$$phase) {
         $scope.$apply();
       }
     }
-    return setTimeout(listener_width, 1000);
+    if ($scope.items.length < 1 && UserSvc.status() === 'login') {
+      switch (Tab) {
+        case 'album':
+          data = PhotoSvc.album(1);
+          console.log(data);
+          break;
+        case 'selected':
+          data = SelectSvc.fetch();
+          break;
+        default:
+          data = PhotoSvc.photo(1);
+      }
+      if (data instanceof Array) {
+        for (_i = 0, _len = data.length; _i < _len; _i++) {
+          item = data[_i];
+          $scope.items.push(item);
+        }
+        if (!$scope.$$phase) {
+          $scope.$apply();
+        }
+      }
+    }
+    return setTimeout(listener, 1000);
   })();
 });
 

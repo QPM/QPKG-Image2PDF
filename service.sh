@@ -2,6 +2,8 @@
 case "$1" in
   start)
     : ADD START ACTIONS HERE
+    chmod 655 $SYS_QPKG_DIR/bin/phantomjs
+    chmod 777 $SYS_QPKG_DIR/output
     ;;
 
   stop)
