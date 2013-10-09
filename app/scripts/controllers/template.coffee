@@ -1,7 +1,14 @@
-app.controller "TemplateCtrl", ($scope, SelectSvc) ->
+app.controller "TemplateCtrl", ($scope, SelectSvc, UserSvc) ->
   $scope.tid = null
   $scope.progress = null
   $scope.status = 'output'
+
+  $scope.user = UserSvc.info()
+
+  $scope.$watch UserSvc.status, () ->
+    $scope.user = UserSvc.info()
+
+  $scope.break = () -> history.back()
 
   $scope.output = () ->
     if $scope.status isnt 'output'

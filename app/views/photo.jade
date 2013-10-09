@@ -1,6 +1,6 @@
 html
   body
-    .wrap(ng-show="user.status=='login'",ng-class="{'show-toolbar': toolbar}")
+    .wrap(ng-show="user.status=='login'",ng-class="{'hide-toolbar': !toolbar}")
       #menu
         .wrap
           a.nav(href="#/photo",ng-class="{active: tab=='photo'}") All Photos
@@ -8,7 +8,7 @@ html
         .toolbar-toggle(ng-class="{checked: toolbar}",ng-click="toolbar_toggle()")
       #toolbar
         .selected
-          .item(ng-repeat="item in selected | lastTo:6",ng-class="{delete: item.hover}",ng-click="select(item)",ng-mouseover="item.hover=true",ng-mouseleave="item.hover=false",style="background-image:url({{item.src}});")
+          .item(class="type-{{item.type}} active",style="background-image:url({{item.src}});",ng-repeat="item in selected | limitTo: 6",ng-class="{delete: item.hover}",ng-click="select(item)",ng-mouseover="item.hover=true",ng-mouseleave="item.hover=false")
             .checkbox
         .select_info
           a.btn_blue(href="#/selected") {{selected.length}} Selected
@@ -16,5 +16,5 @@ html
         .next
           a.btn_blue(href="#/template") Next
       #main
-        .item(ng-repeat="item in items | layout:box",ng-class="{hover: item.hover, active:item.selected}",ng-mouseover="item.hover=true",ng-mouseleave="item.hover=false",ng-click="select(item)",style="background-image:url({{item.src}});width:{{item.dis_width}}px;height:{{item.dis_height}}px")
+        .item(class="type-{{item.type}}",style="background-image:url({{item.src}});width:{{item.dis_width}}px;height:{{item.dis_height}}px",ng-repeat="item in items | layout:box",ng-class="{hover: item.hover, active:item.selected}",ng-mouseover="item.hover=true",ng-mouseleave="item.hover=false",ng-click="select(item)")
           .checkbox

@@ -1,15 +1,14 @@
 html
   body
-    #toolbar
-      .logo
-      .templates
-      .next
-        a(ng-click="output()", ng-switch="status")
-          span(ng-switch-when="download") Download
-          span(ng-switch-when="progress") Progress...
-          span(ng-switch-when="output") OUTPUT
-    #menu(ng-init="init()")
-      a(href="#/photo") 預覽畫面
-      a(href="#/album") 更多樣板
-    #main.template
-      iframe(src="./templates/long/index.html",ngload="pageLoad($event)",scrolling="no")
+    .wrap(ng-show="user.status=='login'")
+      #menu(ng-init="init()")
+        a.back(href="break()") Back
+      #toolbar
+        .templates
+        .next
+          a.btn_blue(ng-click="output()", ng-switch="status")
+            span(ng-switch-when="download") Download
+            span(ng-switch-when="progress") Progress...
+            span(ng-switch-when="output") Output PDF
+      #main.template
+        iframe(src="./templates/long/index.html",ngload="pageLoad($event)",scrolling="no")

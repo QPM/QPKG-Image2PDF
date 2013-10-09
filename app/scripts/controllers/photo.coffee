@@ -1,18 +1,28 @@
 app.controller "PhotoCtrl", ($scope, $routeParams, PhotoSvc, SelectSvc, UserSvc, Tab) ->
   $scope.items = []
   $scope.tab = Tab
+  # $scope.preview = []
   $scope.selected = SelectSvc.fetch()
   $scope.box =
     width: 1000
     height: 300
 
-  $scope.user = UserSvc.info()
-
   $scope.toolbar = false
+  
+  $scope.user = UserSvc.info()
 
   $scope.$watch UserSvc.status, () ->
     $scope.user = UserSvc.info()
-    #PhotoSvc.reset_sid($scope.user.sid) if UserSvc.status() is 'login'
+
+  # $scope.$watch $scope.selected, () ->
+  #   $scope.preview = []
+  #   item = SelectSvc.fetch()
+  #   last = 6
+
+  #   console.log $scope.preview
+
+  #   item_length = item.length
+  #   $scope.preview.push(input[i]) for i in [item_length-last...item_length] when i > -1
 
   $scope.toolbar_toggle = () ->
     $scope.toolbar = !$scope.toolbar

@@ -102,6 +102,19 @@ $menu_height=43px
     &.active
       color: #FFF
       background: url('../images/nav_active.png')
+  .back
+    width: 47px
+    height: 29px
+    margin-left: 5px
+    margin-top: (($menu_height - 29px) / 2)
+    text-decoration: none
+    line-height: 27px
+    font-size: 80%
+    background: url('../images/back.png')
+    text-align: center
+    &.active
+      color: #FFF
+      background: url('../images/back_active.png')
   .toolbar-toggle
     width: 27px
     height: 24px
@@ -118,12 +131,12 @@ $toolbar_width=202px
   width: $toolbar_width
   position: fixed
   top: $headbar_height + $menu_height
-  right: - $toolbar_width
+  right: 0px
   z-index: 6
   transition: right 0.5s
   background: #D8D8D8
-  .show-toolbar &
-    right: 0px
+  .hide-toolbar &
+    right: - $toolbar_width
   .selected
     width: 100%
     padding-top: 66px
@@ -132,6 +145,8 @@ $toolbar_width=202px
       height: 82px
       .checkbox
         height: 82px - 8px
+      &.type-none .checkbox
+        display: none
   .next
     width: 100%
     position: absolute

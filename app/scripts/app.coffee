@@ -1,16 +1,5 @@
 app = angular.module("gruntNgApp", [])
 
-app.filter 'lastTo', () ->
-  (input, num) ->
-    input = input.slice(input.length-num)
-    for i in [input.length...6]
-      input.push {
-        type: 'none'
-        src: './images/selected_icon.png'
-      }
-
-    return input
-
 app.filter 'layout', () ->
   (input, box) ->
     width_capacity = box.width - 5
