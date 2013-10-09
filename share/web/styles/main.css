@@ -1,28 +1,33 @@
 body{background:#fafafa;font-family:Lato,Helvetica,Arial,sans-serif;color:#333;padding:0;margin:0}
 iframe{width:595px;height:842px;border:0;margin:0 auto}
-.photo{position:relative;display:inline-block;max-width:100%;padding:0;background-size:cover;background-position:center center;border:none;}
-.photo .checkbox{background-repeat:no-repeat;background-position:5px 5px}
-.photo.hover .checkbox{border:4px solid #666;background-image:url("../images/checkbox_no.png")}
-.photo.active .checkbox{border:4px solid #0f0;background-image:url("../images/checkbox_yes.png")}
-.photo.delete .checkbox{border:4px solid #f00;background-image:url("../images/checkbox_del.png")}
-.btn_blue,.btn_red{display:block;width:108px;height:39px;color:#fff}
-#headbar{position:fixed;top:0;left:0;z-index:8;height:41px;width:100%;background:url("../images/header_bg.png")}
+.item{position:relative;display:inline-block;max-width:100%;padding:0;background-size:cover;background-position:center center;border:none;}
+.item .checkbox{background-repeat:no-repeat;background-position:5px 5px;background-image:url("../images/checkbox_no.png")}
+.item.hover .checkbox{border:4px solid #666;background-image:url("../images/checkbox_no_hover.png")}
+.item.active .checkbox{border:4px solid #0f0;background-image:url("../images/checkbox_yes.png")}
+.item.active.hover .checkbox{background-image:url("../images/checkbox_yes_hover.png")}
+.btn_blue,.btn_red{display:block;width:108px;height:39px;color:#fff;font-size:80%;cursor:pointer;text-decoration:none;line-height:37px;text-align:center}
+.btn_blue{background:url("../images/btn_blue.png");}
+.btn_blue:active{background:url("../images/btn_blue_active.png")}
+.btn_red{background:url("../images/btn_red.png");}
+.btn_red:active{background:url("../images/btn_red_active.png")}
+#headbar{position:fixed;top:0;left:0;z-index:8;height:41px;width:100%;background:url("../images/header_bg.png");}
+#headbar .title{margin:0 auto;padding:4px 6px}
+#headbar .user{position:absolute;right:5px;top:5px}
 #login{height:240px;width:230px;margin:0 auto;margin-top:88px}
 #menu{position:fixed;top:41px;left:0;z-index:7;height:43px;width:100%;background:url("../images/menu_bg.png");}
-#menu a{padding:8px 24px 12px 24px;cursor:pointer}
+#menu .nav{display:block;float:left;width:88px;height:22px;cursor:pointer;text-decoration:none;line-height:20px;font-size:80%;color:#686b6f;margin-left:5px;margin-top:9.5px;background:url("../images/nav.png");text-align:center;}
+#menu .nav.active{color:#fff;background:url("../images/nav_active.png")}
 #menu .toolbar-toggle{width:27px;height:24px;position:absolute;right:5px;top:9.5px;background:url("../images/toolbar_toggle.png");}
 #menu .toolbar-toggle.checked{background:url("../images/toolbar_toggle_checked.png")}
 #toolbar{height:100%;width:202px;position:fixed;top:84px;right:-202px;z-index:6;transition:right .5s;background:#d8d8d8;}
 .show-toolbar #toolbar{right:0}
-#toolbar .logo{width:100%;height:66px}
-#toolbar .selected{width:100%;padding-top:66px;overflow-y:scroll;}
-#toolbar .selected .photo{width:60px;height:60px;}
-#toolbar .selected .photo .checkbox{height:152px}
-#toolbar .next{width:100%;position:absolute;bottom:0;left:0;padding-bottom:5px;}
-#toolbar .next a{display:block;margin:0 5px;padding:12px 0 13px;background:#2980b9;color:#fff;line-height:20px;font-size:17px;text-align:center;}
-#toolbar .next a:hover{background:#3498db}
+#toolbar .selected{width:100%;padding-top:66px;}
+#toolbar .selected .item{width:82px;height:82px;}
+#toolbar .selected .item .checkbox{height:74px}
+#toolbar .next{width:100%;position:absolute;bottom:84px;left:0;padding-bottom:5px}
+#toolbar .btn_blue,#toolbar .btn_red{margin:0 auto}
 #main{margin-top:84px;margin-right:0;transition:margin-right .5s;background:#aaa;}
 .show-toolbar #main{margin-right:202px}
-#main .photo{height:300px;margin-left:5px;margin-top:5px;}
-#main .photo .checkbox{height:292px}
+#main .item{height:300px;margin-left:5px;margin-top:5px;}
+#main .item .checkbox{height:292px}
 #main.template{display:table-cell;vertical-align:middle;text-align:center}

@@ -1,6 +1,7 @@
 app.controller "PhotoCtrl", ($scope, $routeParams, PhotoSvc, SelectSvc, UserSvc, Tab) ->
   $scope.items = []
-  $scope.selected = [] #SelectSvc.photo()
+  $scope.tab = Tab
+  $scope.selected = SelectSvc.fetch()
   $scope.box =
     width: 1000
     height: 300

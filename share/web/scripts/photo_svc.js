@@ -1,11 +1,12 @@
 app.service('PhotoSvc', [
   function() {
-    var album, albumPhoto, fetch_album, fetch_photo, photo, ps;
+    var album, albumPhoto, dblite, fetch_album, fetch_photo, get_photo_from_dblite, photo, ps;
     ps = {
       path: "/photo",
       sid: null,
       page_limit: 100
     };
+    dblite = {};
     photo = {
       data: [],
       count: 0
@@ -15,6 +16,25 @@ app.service('PhotoSvc', [
       count: 0
     };
     albumPhoto = {};
+    get_photo_from_dblite = function(photo) {
+      var id;
+      id = $('id', photo).text();
+      if (!dblite[id]) {
+        dblite[id] = {
+          id: id,
+          type: 'photo',
+          src: '/photo/api/thumb.php?f=' + id,
+          output: location.protocol + '//' + location.host + '/photo/api/photo.php?&' + $.param({
+            a: 'display',
+            f: id,
+            sid: ps.sid
+          }),
+          width: $('iWidth', photo).text(),
+          height: $('iHeight', photo).text()
+        };
+      }
+      return dblite[id];
+    };
     fetch_photo = function(page, id) {
       var sid, svc, target;
       sid = ps.sid;
@@ -50,19 +70,7 @@ app.service('PhotoSvc', [
         }
         return $('FileItem', res).each(function() {
           if ($('MediaType', this).text() === 'photo') {
-            id = $('id', this).text();
-            return target.data[page].push({
-              id: id,
-              type: 'photo',
-              src: '/photo/api/thumb.php?f=' + id,
-              output: location.protocol + '//' + location.host + '/photo/api/photo.php?&' + $.param({
-                a: 'display',
-                f: id,
-                sid: ps.sid
-              }),
-              width: $('iWidth', this).text(),
-              height: $('iHeight', this).text()
-            });
+            return target.data[page].push(get_photo_from_dblite(this));
           }
         });
       });

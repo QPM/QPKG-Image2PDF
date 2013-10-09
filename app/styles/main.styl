@@ -11,7 +11,7 @@ iframe
   border: 0px
   margin: 0 auto
 
-.photo
+.item
   position: relative
   display: inline-block
   max-width: 100%
@@ -22,21 +22,35 @@ iframe
   .checkbox
     background-repeat: no-repeat
     background-position: 5px 5px
+    background-image: url('../images/checkbox_no.png')
   &.hover .checkbox
     border: 4px solid #666
-    background-image: url('../images/checkbox_no.png')
+    background-image: url('../images/checkbox_no_hover.png')
   &.active .checkbox
     border: 4px solid #0F0
     background-image: url('../images/checkbox_yes.png')
-  &.delete .checkbox
-    border: 4px solid #F00
-    background-image: url('../images/checkbox_del.png')
+  &.active.hover .checkbox
+    background-image: url('../images/checkbox_yes_hover.png')
 
 .btn_blue, .btn_red
   display: block
   width: 108px
   height: 39px
   color: #FFF
+  font-size: 80%
+  cursor: pointer
+  text-decoration: none
+  line-height: 37px
+  text-align: center
+
+.btn_blue
+  background: url('../images/btn_blue.png')
+  &:active
+    background: url('../images/btn_blue_active.png')
+.btn_red
+  background: url('../images/btn_red.png')
+  &:active
+    background: url('../images/btn_red_active.png')
 
 $headbar_height=41px
 #headbar
@@ -47,6 +61,13 @@ $headbar_height=41px
   height: $headbar_height
   width: 100%
   background: url('../images/header_bg.png')
+  .title
+    margin: 0 auto
+    padding: 4px 6px
+  .user
+    position: absolute
+    right: 5px
+    top: 5px
 
 #login
   height: 240px
@@ -64,9 +85,23 @@ $menu_height=43px
   height: $menu_height
   width: 100%
   background: url('../images/menu_bg.png')
-  a
-    padding: 8px 24px 12px 24px
+  .nav
+    display: block
+    float: left
+    width: 88px
+    height: 22px
     cursor: pointer
+    text-decoration: none
+    line-height: 20px
+    font-size: 80%
+    color: #686B6F
+    margin-left: 5px
+    margin-top: (($menu_height - 24px) / 2)
+    background: url('../images/nav.png')
+    text-align: center
+    &.active
+      color: #FFF
+      background: url('../images/nav_active.png')
   .toolbar-toggle
     width: 27px
     height: 24px
@@ -89,44 +124,31 @@ $toolbar_width=202px
   background: #D8D8D8
   .show-toolbar &
     right: 0px
-  .logo
-    width: 100%
-    height: 66px
   .selected
     width: 100%
     padding-top: 66px
-    overflow-y: scroll
-    .photo
-      width: 60px
-      height: 60px
+    .item
+      width: 82px
+      height: 82px
       .checkbox
-        height: 160px - 8px
+        height: 82px - 8px
   .next
     width: 100%
     position: absolute
-    bottom: 0px
+    bottom: $headbar_height + $menu_height
     left: 0px
     padding-bottom: 5px
-    a
-      display: block
-      margin: 0px 5px
-      padding: 12px 0px 13px
-      background: #2980B9
-      color: #FFF
-      line-height: 20px
-      font-size: 17px
-      text-align: center
-      &:hover
-        background: #3498DB
+  .btn_blue, .btn_red
+    margin: 0 auto
 
 #main
   margin-top: $headbar_height + $menu_height
   margin-right: 0px
   transition: margin-right 0.5s
+  background: #AAA
   .show-toolbar &
     margin-right: $toolbar_width
-  background: #AAA
-  .photo
+  .item
     height: 300px
     margin-left: 5px
     margin-top: 5px

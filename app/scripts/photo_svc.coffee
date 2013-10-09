@@ -5,6 +5,8 @@ app.service 'PhotoSvc', [ () ->
     sid: null
     page_limit: 100
 
+  dblite = {}
+
   photo =
     data: []
     count: 0
@@ -14,6 +16,18 @@ app.service 'PhotoSvc', [ () ->
     count: 0
 
   albumPhoto = {}
+
+  get_photo_from_dblite = (photo) ->
+    id = $('id', photo).text()
+    unless dblite[id]
+      dblite[id] = 
+        id: id
+        type: 'photo'
+        src: '/photo/api/thumb.php?f='+id
+        output: location.protocol+'//'+location.host+'/photo/api/photo.php?&'+$.param({a: 'display', f: id, sid:ps.sid})
+        width: $('iWidth', photo).text()
+        height: $('iHeight', photo).text()
+    return dblite[id]
 
   fetch_photo = (page,id) ->
     sid = ps.sid
@@ -37,15 +51,7 @@ app.service 'PhotoSvc', [ () ->
       target.count = count if count > 0
       $('FileItem',res).each () ->
         if $('MediaType',@).text() is 'photo'
-          id = $('id',@).text()
-          target.data[page].push {
-            id: id
-            type: 'photo'
-            src: '/photo/api/thumb.php?f='+id
-            output: location.protocol+'//'+location.host+'/photo/api/photo.php?&'+$.param({a: 'display', f: id, sid:ps.sid})
-            width: $('iWidth',@).text()
-            height: $('iHeight',@).text()
-          }
+          target.data[page].push get_photo_from_dblite(@)
 
   fetch_album = (page) ->
     sid = ps.sid

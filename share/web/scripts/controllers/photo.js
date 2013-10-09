@@ -1,7 +1,8 @@
 app.controller("PhotoCtrl", function($scope, $routeParams, PhotoSvc, SelectSvc, UserSvc, Tab) {
   var listener;
   $scope.items = [];
-  $scope.selected = [];
+  $scope.tab = Tab;
+  $scope.selected = SelectSvc.fetch();
   $scope.box = {
     width: 1000,
     height: 300
