@@ -1,7 +1,14 @@
-app.controller("TemplateCtrl", function($scope, SelectSvc) {
+app.controller("TemplateCtrl", function($scope, SelectSvc, UserSvc) {
   $scope.tid = null;
   $scope.progress = null;
   $scope.status = 'output';
+  $scope.user = UserSvc.info();
+  $scope.$watch(UserSvc.status, function() {
+    return $scope.user = UserSvc.info();
+  });
+  $scope["break"] = function() {
+    return history.back();
+  };
   $scope.output = function() {
     var images;
     if ($scope.status !== 'output') {

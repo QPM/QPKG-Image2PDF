@@ -2,20 +2,6 @@ var app;
 
 app = angular.module("gruntNgApp", []);
 
-app.filter('lastTo', function() {
-  return function(input, num) {
-    var i, _i, _ref;
-    input = input.slice(input.length - num);
-    for (i = _i = _ref = input.length; _ref <= 6 ? _i < 6 : _i > 6; i = _ref <= 6 ? ++_i : --_i) {
-      input.push({
-        type: 'none',
-        src: './images/selected_icon.png'
-      });
-    }
-    return input;
-  };
-});
-
 app.filter('layout', function() {
   return function(input, box) {
     var item, queue, width_capacity, width_loaded, _i, _len;

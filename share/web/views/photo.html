@@ -1,14 +1,14 @@
 
 <html>
   <body>
-    <div ng-show="user.status=='login'" ng-class="{'show-toolbar': toolbar}" class="wrap">
+    <div ng-show="user.status=='login'" ng-class="{'hide-toolbar': !toolbar}" class="wrap">
       <div id="menu">
         <div class="wrap"><a href="#/photo" ng-class="{active: tab=='photo'}" class="nav">All Photos</a><a href="#/album" ng-class="{active: tab=='album'}" class="nav">Albums</a></div>
         <div ng-class="{checked: toolbar}" ng-click="toolbar_toggle()" class="toolbar-toggle"></div>
       </div>
       <div id="toolbar">
         <div class="selected">
-          <div ng-repeat="item in selected | lastTo:6" ng-class="{delete: item.hover}" ng-click="select(item)" ng-mouseover="item.hover=true" ng-mouseleave="item.hover=false" style="background-image:url({{item.src}});" class="item">
+          <div style="background-image:url({{item.src}});" ng-repeat="item in selected | limitTo: 6" ng-class="{delete: item.hover}" ng-click="select(item)" ng-mouseover="item.hover=true" ng-mouseleave="item.hover=false" class="item type-{{item.type}} active">
             <div class="checkbox"></div>
           </div>
         </div>
@@ -16,7 +16,7 @@
         <div class="next"><a href="#/template" class="btn_blue">Next</a></div>
       </div>
       <div id="main">
-        <div ng-repeat="item in items | layout:box" ng-class="{hover: item.hover, active:item.selected}" ng-mouseover="item.hover=true" ng-mouseleave="item.hover=false" ng-click="select(item)" style="background-image:url({{item.src}});width:{{item.dis_width}}px;height:{{item.dis_height}}px" class="item">
+        <div style="background-image:url({{item.src}});width:{{item.dis_width}}px;height:{{item.dis_height}}px" ng-repeat="item in items | layout:box" ng-class="{hover: item.hover, active:item.selected}" ng-mouseover="item.hover=true" ng-mouseleave="item.hover=false" ng-click="select(item)" class="item type-{{item.type}}">
           <div class="checkbox"></div>
         </div>
       </div>

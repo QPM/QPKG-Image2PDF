@@ -1,14 +1,15 @@
 
 <html>
   <body>
-    <div id="toolbar">
-      <div class="logo"></div>
-      <div class="templates"></div>
-      <div class="next"><a ng-click="output()" ng-switch="status"><span ng-switch-when="download">Download</span><span ng-switch-when="progress">Progress...</span><span ng-switch-when="output">OUTPUT</span></a></div>
-    </div>
-    <div id="menu" ng-init="init()"><a href="#/photo">預覽畫面</a><a href="#/album">更多樣板</a></div>
-    <div id="main" class="template">
-      <iframe src="./templates/long/index.html" ngload="pageLoad($event)" scrolling="no"></iframe>
+    <div ng-show="user.status=='login'" class="wrap">
+      <div id="menu" ng-init="init()"><a href="break()" class="back">Back</a></div>
+      <div id="toolbar">
+        <div class="templates"></div>
+        <div class="next"><a ng-click="output()" ng-switch="status" class="btn_blue"><span ng-switch-when="download">Download</span><span ng-switch-when="progress">Progress...</span><span ng-switch-when="output">Output PDF</span></a></div>
+      </div>
+      <div id="main" class="template">
+        <iframe src="./templates/long/index.html" ngload="pageLoad($event)" scrolling="no"></iframe>
+      </div>
     </div>
   </body>
 </html>

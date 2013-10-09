@@ -7,8 +7,8 @@ app.controller("PhotoCtrl", function($scope, $routeParams, PhotoSvc, SelectSvc, 
     width: 1000,
     height: 300
   };
-  $scope.user = UserSvc.info();
   $scope.toolbar = false;
+  $scope.user = UserSvc.info();
   $scope.$watch(UserSvc.status, function() {
     return $scope.user = UserSvc.info();
   });

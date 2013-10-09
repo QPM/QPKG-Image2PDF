@@ -17,13 +17,16 @@ iframe{width:595px;height:842px;border:0;margin:0 auto}
 #menu{position:fixed;top:41px;left:0;z-index:7;height:43px;width:100%;background:url("../images/menu_bg.png");}
 #menu .nav{display:block;float:left;width:88px;height:22px;cursor:pointer;text-decoration:none;line-height:20px;font-size:80%;color:#686b6f;margin-left:5px;margin-top:9.5px;background:url("../images/nav.png");text-align:center;}
 #menu .nav.active{color:#fff;background:url("../images/nav_active.png")}
+#menu .back{width:47px;height:29px;margin-left:5px;margin-top:7px;text-decoration:none;line-height:27px;font-size:80%;background:url("../images/back.png");text-align:center;}
+#menu .back.active{color:#fff;background:url("../images/back_active.png")}
 #menu .toolbar-toggle{width:27px;height:24px;position:absolute;right:5px;top:9.5px;background:url("../images/toolbar_toggle.png");}
 #menu .toolbar-toggle.checked{background:url("../images/toolbar_toggle_checked.png")}
-#toolbar{height:100%;width:202px;position:fixed;top:84px;right:-202px;z-index:6;transition:right .5s;background:#d8d8d8;}
-.show-toolbar #toolbar{right:0}
+#toolbar{height:100%;width:202px;position:fixed;top:84px;right:0;z-index:6;transition:right .5s;background:#d8d8d8;}
+.hide-toolbar #toolbar{right:-202px}
 #toolbar .selected{width:100%;padding-top:66px;}
 #toolbar .selected .item{width:82px;height:82px;}
 #toolbar .selected .item .checkbox{height:74px}
+#toolbar .selected .item.type-none .checkbox{display:none}
 #toolbar .next{width:100%;position:absolute;bottom:84px;left:0;padding-bottom:5px}
 #toolbar .btn_blue,#toolbar .btn_red{margin:0 auto}
 #main{margin-top:84px;margin-right:0;transition:margin-right .5s;background:#aaa;}
