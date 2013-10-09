@@ -53,7 +53,7 @@ page.open(template+'/index.html', function(status) {
         page.close();
         phantom.exit();
         fs.removeTree(template);
-      },50*images.length);
+      },1000*images.length+500);
     });
   });
 });

@@ -2,13 +2,17 @@
 <html>
   <body>
     <div ng-show="user.status=='login'" class="wrap">
-      <div id="menu" ng-init="init()"><a href="break()" class="back">Back</a></div>
+      <div id="menu" ng-init="init()"><a ng-click="break()" class="back">Back</a></div>
       <div id="toolbar">
-        <div class="templates"></div>
+        <div class="templates">
+          <div style="background-image:url({{item.icon}});" ng-repeat="item in temps" ng-class="{active: item.name==temp}" ng-click="select(item)" ng-mouseover="item.hover=true" ng-mouseleave="item.hover=false" class="item"></div>
+        </div>
         <div class="next"><a ng-click="output()" ng-switch="status" class="btn_blue"><span ng-switch-when="download">Download</span><span ng-switch-when="progress">Progress...</span><span ng-switch-when="output">Output PDF</span></a></div>
       </div>
-      <div id="main" class="template">
-        <iframe src="./templates/long/index.html" ngload="pageLoad($event)" scrolling="no"></iframe>
+      <div id="main">
+        <div class="iframe">
+          <iframe src="./templates/{{temp}}/index.html" ngload="pageLoad($event)" scrolling="no"></iframe>
+        </div>
       </div>
     </div>
   </body>

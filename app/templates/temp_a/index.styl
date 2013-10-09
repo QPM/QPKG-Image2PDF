@@ -1,0 +1,42 @@
+body
+  background: #FFF
+  padding: 0px
+  margin: 0px
+
+$page_width=210mm - 4mm
+$page_height=297mm - 4mm
+
+.document
+  width: $page_width + 4mm
+  height: $page_height + 4mm
+  position: relative
+
+.image
+  background-size: cover
+  background-position: center center
+  border: none
+  position: absolute
+  float: left
+  $w = (($page_width - 6mm) / 3)
+  $h = (($page_height - 6mm) / 3)
+  &:nth-child(1)
+    top: 2mm
+    left: 2mm
+    width: $page_width
+    height: $h
+  &:nth-child(2), &:nth-child(3)
+    top: 2mm + $h + 4mm
+    left: 2mm
+    width: $w
+    height: $h * 2 + 3mm
+  &:nth-child(3)
+    left: 2mm + $w + 3mm
+  &:nth-child(4), &:nth-child(5)
+    top: 2mm + $h + 3mm
+    left: 2mm + ($w + 3mm) * 2
+    width: $w
+    height: $h
+  &:nth-child(5)
+    top: 2mm + $h + 3mm + $h + 3mm
+    width: $w
+    height: $h

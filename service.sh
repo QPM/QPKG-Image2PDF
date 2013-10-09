@@ -4,6 +4,13 @@ case "$1" in
     : ADD START ACTIONS HERE
     chmod 655 $SYS_QPKG_DIR/bin/phantomjs
     chmod 777 $SYS_QPKG_DIR/output
+    cp $SYS_QPKG_DIR/lib/libfontconfig.so.1 /usr/lib/libfontconfig.so.1
+    if [ -f "${SYS_QPKG_DIR}/lib/libXext.so.6" ]; then 
+      cp $SYS_QPKG_DIR/lib/libXext.so.6 /usr/lib/libXext.so.6
+    fi
+    if [ -f "${SYS_QPKG_DIR}/lib/libX11.so.6" ]; then 
+      cp $SYS_QPKG_DIR/lib/libX11.so.6 /usr/lib/libX11.so.6
+    fi 
     ;;
 
   stop)

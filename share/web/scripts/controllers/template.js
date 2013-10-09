@@ -1,13 +1,26 @@
-app.controller("TemplateCtrl", function($scope, SelectSvc, UserSvc) {
+app.controller("TemplateCtrl", function($scope, SelectSvc, UserSvc, Configs) {
   $scope.tid = null;
   $scope.progress = null;
   $scope.status = 'output';
+  $scope.temps = [
+    {
+      name: 'temp_a',
+      icon: './templates/temp_a/icon.png'
+    }, {
+      name: 'temp_b',
+      icon: './templates/temp_b/icon.png'
+    }
+  ];
+  $scope.temp = 'temp_a';
   $scope.user = UserSvc.info();
   $scope.$watch(UserSvc.status, function() {
     return $scope.user = UserSvc.info();
   });
   $scope["break"] = function() {
-    return history.back();
+    return location.hash = '#/' + (Configs.get_step(1) || 'photo');
+  };
+  $scope.select = function(item) {
+    return $scope.temp = item.name;
   };
   $scope.output = function() {
     var images;
@@ -20,13 +33,13 @@ app.controller("TemplateCtrl", function($scope, SelectSvc, UserSvc) {
     } else {
       images = [];
       $(SelectSvc.fetch()).each(function() {
-        return images.push('http://127.0.0.1/' + this.src);
+        return images.push('http://127.0.0.1' + this.output);
       });
       console.log(images);
       $scope.status = 'progress';
       return $.ajax({
         type: "POST",
-        url: "./api.php?action=output",
+        url: "./api.php?action=output&template=" + $scope.temp,
         cache: false,
         data: {
           images: images

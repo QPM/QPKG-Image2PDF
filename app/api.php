@@ -8,7 +8,7 @@
       break;
     case 'output':
       $template = get_query('template');
-      if(!$template) $template = 'long';
+      if(!$template) $template = 'temp_a';
       $tid = time();
       $target = dirname(__DIR__) . '/output/' . $tid . '.json';
       $source = __DIR__ . '/templates/' . $template;

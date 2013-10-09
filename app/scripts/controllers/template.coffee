@@ -1,14 +1,28 @@
-app.controller "TemplateCtrl", ($scope, SelectSvc, UserSvc) ->
+app.controller "TemplateCtrl", ($scope, SelectSvc, UserSvc, Configs) ->
   $scope.tid = null
   $scope.progress = null
   $scope.status = 'output'
 
+  $scope.temps = [
+    {
+      name: 'temp_a'
+      icon: './templates/temp_a/icon.png'
+    },
+    {
+      name: 'temp_b'
+      icon: './templates/temp_b/icon.png'
+    }
+  ]
+
+  $scope.temp = 'temp_a'
+
   $scope.user = UserSvc.info()
 
-  $scope.$watch UserSvc.status, () ->
-    $scope.user = UserSvc.info()
+  $scope.$watch UserSvc.status, () -> $scope.user = UserSvc.info()
 
-  $scope.break = () -> history.back()
+  $scope.break = () -> location.hash = '#/' + (Configs.get_step(1) || 'photo')
+
+  $scope.select = (item) -> $scope.temp = item.name
 
   $scope.output = () ->
     if $scope.status isnt 'output'
@@ -18,12 +32,12 @@ app.controller "TemplateCtrl", ($scope, SelectSvc, UserSvc) ->
         alert('PDF製作中')
     else
       images = []
-      $(SelectSvc.fetch()).each () -> images.push('http://127.0.0.1/'+@src)
+      $(SelectSvc.fetch()).each () -> images.push('http://127.0.0.1'+@output)
       console.log images
       $scope.status = 'progress'
       $.ajax({
         type: "POST"
-        url: "./api.php?action=output"
+        url: "./api.php?action=output&template="+$scope.temp
         cache: false
         data: {images: images}
         dataType: 'json'

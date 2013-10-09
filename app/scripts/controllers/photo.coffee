@@ -1,4 +1,4 @@
-app.controller "PhotoCtrl", ($scope, $routeParams, PhotoSvc, SelectSvc, UserSvc, Tab) ->
+app.controller "PhotoCtrl", ($scope, $routeParams, PhotoSvc, SelectSvc, UserSvc, Tab, Configs) ->
   $scope.items = []
   $scope.tab = Tab
   # $scope.preview = []
@@ -14,6 +14,10 @@ app.controller "PhotoCtrl", ($scope, $routeParams, PhotoSvc, SelectSvc, UserSvc,
   $scope.$watch UserSvc.status, () ->
     $scope.user = UserSvc.info()
 
+  $scope.init = () ->
+    Configs.set_step(1, Tab)
+    $scope.toolbar = true if $scope.selected.length > 0
+
   # $scope.$watch $scope.selected, () ->
   #   $scope.preview = []
   #   item = SelectSvc.fetch()
@@ -27,13 +31,17 @@ app.controller "PhotoCtrl", ($scope, $routeParams, PhotoSvc, SelectSvc, UserSvc,
   $scope.toolbar_toggle = () ->
     $scope.toolbar = !$scope.toolbar
 
-  $scope.select = (photo) ->
-    photo.hover = off
-    if photo.selected
-      SelectSvc.del(photo)
-    else
-      SelectSvc.add(photo)
-      $scope.toolbar = true
+  $scope.select = (item) ->
+    item.hover = off
+    switch item.type
+      when 'photo'
+        if item.selected
+          SelectSvc.del(item)
+        else
+          SelectSvc.add(item)
+          $scope.toolbar = true
+      when 'album'
+        location.hash = '#/albumPhoto/'+item.id
 
   $scope.clear = () ->
     SelectSvc.clear()
@@ -51,6 +59,9 @@ app.controller "PhotoCtrl", ($scope, $routeParams, PhotoSvc, SelectSvc, UserSvc,
           console.log data
         when 'selected'
           data = SelectSvc.fetch()
+        when 'albumPhoto'
+          console.log 'album:'+$routeParams.id
+          data = PhotoSvc.photo(1,$routeParams.id)
         else
           data = PhotoSvc.photo(1)
       if data instanceof Array

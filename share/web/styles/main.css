@@ -1,7 +1,8 @@
 body{background:#fafafa;font-family:Lato,Helvetica,Arial,sans-serif;color:#333;padding:0;margin:0}
-iframe{width:595px;height:842px;border:0;margin:0 auto}
+.iframe,iframe{margin:0 auto;width:210mm;height:297mm;border:0}
 .item{position:relative;display:inline-block;max-width:100%;padding:0;background-size:cover;background-position:center center;border:none;}
-.item .checkbox{background-repeat:no-repeat;background-position:5px 5px;background-image:url("../images/checkbox_no.png")}
+.item .checkbox{background-repeat:no-repeat;background-position:5px 5px;background-image:url("../images/checkbox_no.png");display:none}
+.item.type-photo .checkbox{display:block}
 .item.hover .checkbox{border:4px solid #666;background-image:url("../images/checkbox_no_hover.png")}
 .item.active .checkbox{border:4px solid #0f0;background-image:url("../images/checkbox_yes.png")}
 .item.active.hover .checkbox{background-image:url("../images/checkbox_yes_hover.png")}
@@ -17,7 +18,7 @@ iframe{width:595px;height:842px;border:0;margin:0 auto}
 #menu{position:fixed;top:41px;left:0;z-index:7;height:43px;width:100%;background:url("../images/menu_bg.png");}
 #menu .nav{display:block;float:left;width:88px;height:22px;cursor:pointer;text-decoration:none;line-height:20px;font-size:80%;color:#686b6f;margin-left:5px;margin-top:9.5px;background:url("../images/nav.png");text-align:center;}
 #menu .nav.active{color:#fff;background:url("../images/nav_active.png")}
-#menu .back{width:47px;height:29px;margin-left:5px;margin-top:7px;text-decoration:none;line-height:27px;font-size:80%;background:url("../images/back.png");text-align:center;}
+#menu .back{width:47px;height:29px;margin-left:5px;margin-top:7px;text-decoration:none;line-height:27px;font-size:80%;background:url("../images/back.png");text-align:center;display:block;cursor:pointer;}
 #menu .back.active{color:#fff;background:url("../images/back_active.png")}
 #menu .toolbar-toggle{width:27px;height:24px;position:absolute;right:5px;top:9.5px;background:url("../images/toolbar_toggle.png");}
 #menu .toolbar-toggle.checked{background:url("../images/toolbar_toggle_checked.png")}
@@ -29,8 +30,8 @@ iframe{width:595px;height:842px;border:0;margin:0 auto}
 #toolbar .selected .item.type-none .checkbox{display:none}
 #toolbar .next{width:100%;position:absolute;bottom:84px;left:0;padding-bottom:5px}
 #toolbar .btn_blue,#toolbar .btn_red{margin:0 auto}
-#main{margin-top:84px;margin-right:0;transition:margin-right .5s;background:#aaa;}
-.show-toolbar #main{margin-right:202px}
+#toolbar .templates .item{width:71px;height:101px;display:block;margin-bottom:6px}
+#main{margin-top:84px;margin-right:202px;transition:margin-right .5s;background:#aaa;}
+.hide-toolbar #main{margin-right:0}
 #main .item{height:300px;margin-left:5px;margin-top:5px;}
 #main .item .checkbox{height:292px}
-#main.template{display:table-cell;vertical-align:middle;text-align:center}

@@ -54,7 +54,7 @@ module.exports = (grunt) ->
       main: 
         files: [
           {expand: true, src: ['bower_components/**'], dest: 'share/web/'}
-          {expand: true, cwd:'app/', src: ['images/**'], dest: 'share/web/'}
+          {expand: true, cwd:'app/', src: ['images/**','**/*.png'], dest: 'share/web/'}
           {expand: true, cwd:'app/', src: ['*.icon','*.php','**/*.js','**/*.css'], dest: 'share/web/'}
         ]
     watch:

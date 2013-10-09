@@ -24,7 +24,7 @@ app.service 'PhotoSvc', [ () ->
         id: id
         type: 'photo'
         src: '/photo/api/thumb.php?f='+id
-        output: location.protocol+'//'+location.host+'/photo/api/photo.php?&'+$.param({a: 'display', f: id, sid:ps.sid})
+        output: '/photo/api/photo.php?&'+$.param({a: 'display', f: id, sid:ps.sid})
         width: $('iWidth', photo).text()
         height: $('iHeight', photo).text()
     return dblite[id]

@@ -1,10 +1,11 @@
 html
   body
-    .wrap(ng-show="user.status=='login'",ng-class="{'hide-toolbar': !toolbar}")
+    .wrap(ng-show="user.status=='login'",ng-class="{'hide-toolbar': !toolbar}",ng-init="init()")
       #menu
-        .wrap
+        .wrap(ng-hide="tab=='albumPhoto'")
           a.nav(href="#/photo",ng-class="{active: tab=='photo'}") All Photos
           a.nav(href="#/album",ng-class="{active: tab=='album'}") Albums
+        a.back(href="#/album",ng-show="tab=='albumPhoto'") Back
         .toolbar-toggle(ng-class="{checked: toolbar}",ng-click="toolbar_toggle()")
       #toolbar
         .selected

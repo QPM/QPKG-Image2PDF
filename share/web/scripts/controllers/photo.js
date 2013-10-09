@@ -1,4 +1,4 @@
-app.controller("PhotoCtrl", function($scope, $routeParams, PhotoSvc, SelectSvc, UserSvc, Tab) {
+app.controller("PhotoCtrl", function($scope, $routeParams, PhotoSvc, SelectSvc, UserSvc, Tab, Configs) {
   var listener;
   $scope.items = [];
   $scope.tab = Tab;
@@ -12,16 +12,28 @@ app.controller("PhotoCtrl", function($scope, $routeParams, PhotoSvc, SelectSvc, 
   $scope.$watch(UserSvc.status, function() {
     return $scope.user = UserSvc.info();
   });
+  $scope.init = function() {
+    Configs.set_step(1, Tab);
+    if ($scope.selected.length > 0) {
+      return $scope.toolbar = true;
+    }
+  };
   $scope.toolbar_toggle = function() {
     return $scope.toolbar = !$scope.toolbar;
   };
-  $scope.select = function(photo) {
-    photo.hover = false;
-    if (photo.selected) {
-      return SelectSvc.del(photo);
-    } else {
-      SelectSvc.add(photo);
-      return $scope.toolbar = true;
+  $scope.select = function(item) {
+    item.hover = false;
+    switch (item.type) {
+      case 'photo':
+        if (item.selected) {
+          return SelectSvc.del(item);
+        } else {
+          SelectSvc.add(item);
+          return $scope.toolbar = true;
+        }
+        break;
+      case 'album':
+        return location.hash = '#/albumPhoto/' + item.id;
     }
   };
   $scope.clear = function() {
@@ -44,6 +56,10 @@ app.controller("PhotoCtrl", function($scope, $routeParams, PhotoSvc, SelectSvc, 
           break;
         case 'selected':
           data = SelectSvc.fetch();
+          break;
+        case 'albumPhoto':
+          console.log('album:' + $routeParams.id);
+          data = PhotoSvc.photo(1, $routeParams.id);
           break;
         default:
           data = PhotoSvc.photo(1);
