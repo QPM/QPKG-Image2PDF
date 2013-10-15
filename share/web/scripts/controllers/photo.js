@@ -4,8 +4,10 @@ app.controller("PhotoCtrl", function($scope, $routeParams, PhotoSvc, SelectSvc, 
   $scope.tab = Tab;
   $scope.selected = SelectSvc.fetch();
   $scope.box = {
-    width: 1000,
-    height: 300
+    wrap_width: 1000,
+    wrap_height: 1000,
+    width: 1,
+    height: 1
   };
   $scope.toolbar = false;
   $scope.user = UserSvc.info();
@@ -15,7 +17,13 @@ app.controller("PhotoCtrl", function($scope, $routeParams, PhotoSvc, SelectSvc, 
   $scope.init = function() {
     Configs.set_step(1, Tab);
     if ($scope.selected.length > 0) {
-      return $scope.toolbar = true;
+      $scope.toolbar = true;
+    }
+    switch (Tab) {
+      case 'album':
+        return $scope.box.type = 'album';
+      default:
+        return $scope.box.type = 'photo';
     }
   };
   $scope.toolbar_toggle = function() {
@@ -26,9 +34,16 @@ app.controller("PhotoCtrl", function($scope, $routeParams, PhotoSvc, SelectSvc, 
     switch (item.type) {
       case 'photo':
         if (item.selected) {
-          return SelectSvc.del(item);
+          SelectSvc.del(item);
+          angular.forEach(item.album, function(value, key) {
+            return value.selected--;
+          });
+          return item.album;
         } else {
           SelectSvc.add(item);
+          angular.forEach(item.album, function(value, key) {
+            return value.selected++;
+          });
           return $scope.toolbar = true;
         }
         break;
@@ -40,25 +55,27 @@ app.controller("PhotoCtrl", function($scope, $routeParams, PhotoSvc, SelectSvc, 
     return SelectSvc.clear();
   };
   return (listener = function() {
-    var data, item, width, _i, _len;
+    var data, height, item, reDisplay, width, _i, _len;
+    reDisplay = false;
     width = $('#main').width();
-    if (width !== $scope.box.width) {
-      $scope.box.width = width;
-      if (!$scope.$$phase) {
-        $scope.$apply();
-      }
+    if (width !== $scope.box.wrap_width) {
+      $scope.box.wrap_width = width;
+      reDisplay = true;
+    }
+    height = $('#main').height();
+    if (height !== $scope.box.wrap_height) {
+      $scope.box.wrap_height = height;
+      reDisplay = true;
     }
     if ($scope.items.length < 1 && UserSvc.status() === 'login') {
       switch (Tab) {
         case 'album':
           data = PhotoSvc.album(1);
-          console.log(data);
           break;
         case 'selected':
           data = SelectSvc.fetch();
           break;
         case 'albumPhoto':
-          console.log('album:' + $routeParams.id);
           data = PhotoSvc.photo(1, $routeParams.id);
           break;
         default:
@@ -69,10 +86,11 @@ app.controller("PhotoCtrl", function($scope, $routeParams, PhotoSvc, SelectSvc, 
           item = data[_i];
           $scope.items.push(item);
         }
-        if (!$scope.$$phase) {
-          $scope.$apply();
-        }
+        reDisplay = true;
       }
+    }
+    if (!(reDisplay ? $scope.$$phase : void 0)) {
+      $scope.$apply();
     }
     return setTimeout(listener, 1000);
   })();

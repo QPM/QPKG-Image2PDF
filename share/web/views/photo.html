@@ -17,7 +17,10 @@
       </div>
       <div id="main">
         <div style="background-image:url({{item.src}});width:{{item.dis_width}}px;height:{{item.dis_height}}px" ng-repeat="item in items | layout:box" ng-class="{hover: item.hover, active:item.selected}" ng-mouseover="item.hover=true" ng-mouseleave="item.hover=false" ng-click="select(item)" class="item type-{{item.type}}">
-          <div class="checkbox"></div>
+          <div style="width:{{item.dis_width-8}}px;height:{{item.dis_height-8}}px" class="checkbox"></div>
+          <div class="title">{{item.title}}</div>
+          <div class="count">{{item.count}} Photos</div>
+          <div class="selected">{{item.selected}} Selected</div>
         </div>
       </div>
     </div>

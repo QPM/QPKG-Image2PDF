@@ -4,8 +4,10 @@ app.controller "PhotoCtrl", ($scope, $routeParams, PhotoSvc, SelectSvc, UserSvc,
   # $scope.preview = []
   $scope.selected = SelectSvc.fetch()
   $scope.box =
-    width: 1000
-    height: 300
+    wrap_width: 1000
+    wrap_height: 1000
+    width: 1
+    height: 1
 
   $scope.toolbar = false
   
@@ -17,6 +19,11 @@ app.controller "PhotoCtrl", ($scope, $routeParams, PhotoSvc, SelectSvc, UserSvc,
   $scope.init = () ->
     Configs.set_step(1, Tab)
     $scope.toolbar = true if $scope.selected.length > 0
+    switch Tab
+      when 'album'
+        $scope.box.type = 'album'
+      else
+        $scope.box.type = 'photo'
 
   # $scope.$watch $scope.selected, () ->
   #   $scope.preview = []
@@ -37,8 +44,11 @@ app.controller "PhotoCtrl", ($scope, $routeParams, PhotoSvc, SelectSvc, UserSvc,
       when 'photo'
         if item.selected
           SelectSvc.del(item)
+          angular.forEach item.album, (value, key) -> value.selected--
+          item.album 
         else
           SelectSvc.add(item)
+          angular.forEach item.album, (value, key) -> value.selected++
           $scope.toolbar = true
       when 'album'
         location.hash = '#/albumPhoto/'+item.id
@@ -47,26 +57,33 @@ app.controller "PhotoCtrl", ($scope, $routeParams, PhotoSvc, SelectSvc, UserSvc,
     SelectSvc.clear()
 
   (listener = ()->
+    reDisplay = off
+
     width = $('#main').width()
-    if width isnt $scope.box.width
-      $scope.box.width = width
-      $scope.$apply() unless $scope.$$phase
+    if width isnt $scope.box.wrap_width
+      $scope.box.wrap_width = width
+      reDisplay = on
+
+    height = $('#main').height()
+    if height isnt $scope.box.wrap_height
+      $scope.box.wrap_height = height
+      reDisplay = on
 
     if $scope.items.length < 1 and UserSvc.status() is 'login'
       switch Tab
         when 'album'
           data = PhotoSvc.album(1)
-          console.log data
         when 'selected'
           data = SelectSvc.fetch()
         when 'albumPhoto'
-          console.log 'album:'+$routeParams.id
           data = PhotoSvc.photo(1,$routeParams.id)
         else
           data = PhotoSvc.photo(1)
       if data instanceof Array
         $scope.items.push(item) for item in data
-        $scope.$apply() unless $scope.$$phase
+        reDisplay = on
+
+    $scope.$apply() unless $scope.$$phase if reDisplay
 
     setTimeout listener, 1000
   )()

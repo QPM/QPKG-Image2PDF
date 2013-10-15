@@ -18,4 +18,7 @@ html
           a.btn_blue(href="#/template") Next
       #main
         .item(class="type-{{item.type}}",style="background-image:url({{item.src}});width:{{item.dis_width}}px;height:{{item.dis_height}}px",ng-repeat="item in items | layout:box",ng-class="{hover: item.hover, active:item.selected}",ng-mouseover="item.hover=true",ng-mouseleave="item.hover=false",ng-click="select(item)")
-          .checkbox
+          .checkbox(style="width:{{item.dis_width-8}}px;height:{{item.dis_height-8}}px")
+          .title {{item.title}}
+          .count {{item.count}} Photos
+          .selected {{item.selected}} Selected

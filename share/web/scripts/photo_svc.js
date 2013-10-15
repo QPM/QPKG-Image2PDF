@@ -1,26 +1,30 @@
 app.service('PhotoSvc', [
   function() {
-    var album, albumPhoto, dblite, fetch_album, fetch_photo, get_photo_from_dblite, photo, ps;
+    var album_array, album_lite, auto_fetch, fetch_album, fetch_album_photo, fetch_photo, get_album_from_dblite, get_photo_from_dblite, photo_array, photo_lite, ps;
     ps = {
       path: "/photo",
       sid: null,
       page_limit: 100
     };
-    dblite = {};
-    photo = {
+    photo_lite = {};
+    album_lite = {};
+    photo_array = {
       data: [],
-      count: 0
+      count: 0,
+      selected: 0,
+      page: 0,
+      looading: false
     };
-    album = {
+    album_array = {
       data: [],
-      count: 0
+      count: 0,
+      page: 0
     };
-    albumPhoto = {};
-    get_photo_from_dblite = function(photo) {
+    get_photo_from_dblite = function(photo, album) {
       var id;
       id = $('id', photo).text();
-      if (!dblite[id]) {
-        dblite[id] = {
+      if (!photo_lite[id]) {
+        photo_lite[id] = {
           id: id,
           type: 'photo',
           src: '/photo/api/thumb.php?f=' + id,
@@ -30,24 +34,47 @@ app.service('PhotoSvc', [
             sid: ps.sid
           }),
           width: $('iWidth', photo).text(),
-          height: $('iHeight', photo).text()
+          height: $('iHeight', photo).text(),
+          selected: false,
+          album: []
         };
       }
-      return dblite[id];
+      if (album) {
+        photo_lite[id].album.push(album);
+      }
+      return photo_lite[id];
+    };
+    get_album_from_dblite = function(album) {
+      var id;
+      id = $('iPhotoAlbumId', album).text();
+      if (!album_lite[id]) {
+        album_lite[id] = {
+          id: id,
+          type: 'album',
+          src: '/photo/api/thumb.php?f=' + id,
+          count: $('PhotoCount', album).text(),
+          title: $('cAlbumTitle', album).text(),
+          created: $('DateCreated', album).text(),
+          modified: $('DateModified', album).text(),
+          selected: 0,
+          data: [],
+          page: 1,
+          looading: false
+        };
+      }
+      return album_lite[id];
     };
     fetch_photo = function(page, id) {
       var sid, svc, target;
       sid = ps.sid;
       if (id) {
-        albumPhoto[id].data[page] = [];
-        target = albumPhoto[id];
+        target = album_lite[id];
         svc = ps.path + "/api/list.php?t=albumPhotos&" + $.param({
           a: id,
           p: page,
           c: ps.page_limit
         });
       } else {
-        photo.data[page] = [];
         target = photo;
         svc = ps.path + "/api/list.php?t=photos&" + $.param({
           p: page,
@@ -69,58 +96,55 @@ app.service('PhotoSvc', [
           target.count = count;
         }
         return $('FileItem', res).each(function() {
+          var item;
           if ($('MediaType', this).text() === 'photo') {
-            return target.data[page].push(get_photo_from_dblite(this));
+            item = get_photo_from_dblite(this, target);
+            target.data.push(item);
+            if (item.selected) {
+              return target.selected++;
+            }
           }
         });
       });
     };
-    fetch_album = function(page) {
+    fetch_album = function() {
       var sid;
       sid = ps.sid;
-      album.data[page] = [];
       return $.ajax({
         type: "GET",
         url: ps.path + "/api/list.php?t=albums&" + $.param({
-          p: page,
+          p: ++album_array.page,
           c: ps.page_limit
         }),
         cache: false,
         dataType: 'xml'
-      }).done(function(res) {
+      }).always(function(res, status) {
         if (sid !== ps.sid) {
           return;
         }
-        return $('FileItem', res).each(function() {
-          var id;
-          id = $('iPhotoAlbumId', this).text();
-          return album.data[page].push({
-            id: id,
-            type: 'album',
-            src: '/photo/api/thumb.php?f=' + id,
-            count: $('PhotoCount', this).text(),
-            title: $('cAlbumTitle', this).text(),
-            created: $('DateCreated', this).text(),
-            modified: $('DateModified', this).text()
+        if (status === 'success') {
+          $('FileItem', res).each(function() {
+            return album_array.data.push(get_album_from_dblite(this));
           });
-        });
+        }
+        if (album_array.data.length < album_array.count) {
+          return setTimeout(fetch_album, 500);
+        }
       });
     };
+    fetch_album_photo = function() {};
     this.photo = function(page, id) {
       var target;
       if (page < 1) {
         page = 1;
       }
       if (id) {
-        if (!albumPhoto[id]) {
-          albumPhoto[id] = {
-            data: [],
-            count: 0
-          };
-        }
-        target = albumPhoto[id];
+        target = album_lite[id];
       } else {
         target = photo;
+      }
+      if (!(target instanceof Object)) {
+        return false;
       }
       if (target.data[page] instanceof Array) {
         if (target.data[page].length > 0) {
@@ -129,7 +153,6 @@ app.service('PhotoSvc', [
           return false;
         }
       } else {
-        console.log('req photo');
         if (ps.sid) {
           fetch_photo(page, id);
         }
@@ -147,7 +170,6 @@ app.service('PhotoSvc', [
           return false;
         }
       } else {
-        console.log('req album');
         if (ps.sid) {
           fetch_album(page);
         }
@@ -155,27 +177,27 @@ app.service('PhotoSvc', [
       }
     };
     this.reset_sid = function(sid) {
-      var i, item, _i, _j, _len, _len1, _ref, _ref1;
       if (sid !== ps.sid) {
         ps.sid = sid;
         photo.count = 0;
-        _ref = photo.data;
-        for (i = _i = 0, _len = _ref.length; _i < _len; i = ++_i) {
-          item = _ref[i];
-          photo.data[i] = null;
+        while (photo.data.length) {
+          photo.data.shift();
         }
         album.count = 0;
-        _ref1 = photo.data;
-        for (i = _j = 0, _len1 = _ref1.length; _j < _len1; i = ++_j) {
-          item = _ref1[i];
-          album.data[i] = null;
+        while (album.data.length) {
+          album.data.shift();
         }
-        return albumPhoto = {};
+        photo_lite = {};
+        album_lite = {};
+        return fetch_album();
       }
     };
-    return this.photo_count = function() {
+    this.photo_count = function() {
       return photo.count;
     };
+    return (auto_fetch = function() {
+      return angular.forEach(album_array.data, function(album, key) {});
+    })();
   }
 ]);
 

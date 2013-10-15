@@ -4,34 +4,36 @@ app = angular.module("gruntNgApp", []);
 
 app.filter('layout', function() {
   return function(input, box) {
-    var item, queue, width_capacity, width_loaded, _i, _len;
-    width_capacity = box.width - 5;
-    width_loaded = 0;
-    queue = [];
-    angular.forEach(input, function(value, key) {
-      var item, _i, _len;
-      queue.push(value);
-      width_capacity -= 5;
-      value.dis_height = box.height;
-      if (value.type === 'album') {
-        value.dis_width = box.height;
-      } else {
-        value.dis_width = box.height / value.height * value.width;
-      }
-      width_loaded += value.dis_width;
-      if (width_loaded >= width_capacity) {
-        for (_i = 0, _len = queue.length; _i < _len; _i++) {
-          item = queue[_i];
-          item.dis_width = item.dis_width / width_loaded * width_capacity;
+    var height, index, item, queue, size, width, width_capacity, width_loaded, _i, _len;
+    switch (box.type) {
+      case 'photo':
+        index = 0;
+        height = box.height * 300;
+        while (index < input.length) {
+          queue = [];
+          width_capacity = box.wrap_width - 5;
+          width_loaded = 0;
+          while (width_loaded < width_capacity && index < input.length) {
+            item = input[index++];
+            queue.push(item);
+            item.dis_height = height;
+            item.dis_width = height / item.height * item.width;
+            width_capacity -= 5;
+            width_loaded += item.dis_width;
+          }
+          for (_i = 0, _len = queue.length; _i < _len; _i++) {
+            item = queue[_i];
+            item.dis_width = item.dis_width / width_loaded * width_capacity;
+          }
         }
-        queue = [];
-        width_capacity = box.width - 5;
-        return width_loaded = 0;
-      }
-    });
-    for (_i = 0, _len = queue.length; _i < _len; _i++) {
-      item = queue[_i];
-      item.dis_width = item.dis_width / width_loaded * width_capacity;
+        break;
+      case 'album':
+        width = box.width * 160;
+        size = box.wrap_width / Math.ceil(box.wrap_width / width);
+        angular.forEach(input, function(value, key) {
+          value.dis_width = size - 5;
+          return value.dis_height = size - 5;
+        });
     }
     return input;
   };

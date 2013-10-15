@@ -2,25 +2,29 @@ app = angular.module("gruntNgApp", [])
 
 app.filter 'layout', () ->
   (input, box) ->
-    width_capacity = box.width - 5
-    width_loaded = 0
-    queue = []
-    angular.forEach input, (value, key)->
-      queue.push value
-      width_capacity -= 5
-      value.dis_height = box.height
-      if value.type is 'album'
-        value.dis_width = box.height
-      else
-        value.dis_width = box.height / value.height * value.width
-      width_loaded += value.dis_width
-      if width_loaded >= width_capacity
-        item.dis_width = item.dis_width/width_loaded*width_capacity for item in queue
-        queue = []
-        width_capacity = box.width - 5
-        width_loaded = 0
 
-    item.dis_width = item.dis_width/width_loaded*width_capacity for item in queue
+    switch box.type
+      when 'photo'
+        index = 0
+        height = box.height * 300
+        while index < input.length
+          queue = []
+          width_capacity = box.wrap_width - 5
+          width_loaded = 0
+          while width_loaded < width_capacity and index < input.length
+            item = input[index++]
+            queue.push item
+            item.dis_height = height
+            item.dis_width = height / item.height * item.width
+            width_capacity -= 5
+            width_loaded += item.dis_width
+          item.dis_width = item.dis_width/width_loaded*width_capacity for item in queue
+      when 'album'
+        width = box.width * 160
+        size = box.wrap_width / Math.ceil(box.wrap_width / width)
+        angular.forEach input, (value, key)->
+          value.dis_width = size - 5
+          value.dis_height = size - 5
     return input
 
 app.controller "UserCtrl", ($scope, UserSvc, PhotoSvc) ->
