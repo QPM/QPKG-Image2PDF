@@ -1,0 +1,8 @@
+body{background:#fff;padding:0;margin:0}
+.document{width:210mm;height:297mm;position:relative}
+.image{background-size:cover;background-position:center center;border:none;position:absolute;float:left;}
+.image:nth-child(1){top:2mm;left:2mm;width:206mm;height:95.66666666666667mm}
+.image:nth-child(2),.image:nth-child(3){top:101.66666666666667mm;left:2mm;width:66.66666666666667mm;height:194.33333333333334mm}
+.image:nth-child(3){left:71.66666666666667mm}
+.image:nth-child(4),.image:nth-child(5){top:100.66666666666667mm;left:141.33333333333334mm;width:66.66666666666667mm;height:95.66666666666667mm}
+.image:nth-child(5){top:199.33333333333334mm;width:66.66666666666667mm;height:95.66666666666667mm}

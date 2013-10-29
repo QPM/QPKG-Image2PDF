@@ -39,20 +39,32 @@ app.filter('layout', function() {
   };
 });
 
+app.filter('lastTo', function() {
+  return function(input, max) {
+    var num;
+    num = input.length - max;
+    if (num < 0) {
+      num = 0;
+    }
+    return input.slice(num).reverse();
+  };
+});
+
 app.controller("UserCtrl", function($scope, UserSvc, PhotoSvc) {
   $scope.user = UserSvc.info();
-  $scope.$watch(UserSvc.status, function() {
-    $scope.user = UserSvc.info();
-    if (UserSvc.status() === 'login') {
-      return PhotoSvc.reset_sid($scope.user.sid);
-    }
-  });
   $scope.$watch(UserSvc.status, function() {
     return $scope.user = UserSvc.info();
   });
   $scope.username = null;
   $scope.password = null;
+  $scope.remember = false;
+  $scope.toggle_remember = function() {
+    return $scope.remember = !$scope.remember;
+  };
   return $scope.login = function() {
+    if (!($scope.username && $scope.password)) {
+      return;
+    }
     return UserSvc.login($scope.username, $scope.password);
   };
 });

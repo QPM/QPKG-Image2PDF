@@ -39,6 +39,7 @@ module.exports = (grunt) ->
     stylus:
       options:
         compress: true
+        use: [require('nib')]
       dist:
         files: [
           expand: true
@@ -55,7 +56,7 @@ module.exports = (grunt) ->
         files: [
           {expand: true, src: ['bower_components/**'], dest: 'share/web/'}
           {expand: true, cwd:'app/', src: ['images/**','**/*.png'], dest: 'share/web/'}
-          {expand: true, cwd:'app/', src: ['*.icon','*.php','**/*.js','**/*.css'], dest: 'share/web/'}
+          {expand: true, cwd:'app/', src: ['*.ico','*.php','**/*.js','**/*.css'], dest: 'share/web/'}
         ]
     watch:
       jade:

@@ -16,7 +16,6 @@ case "$1" in
   stop)
     : ADD STOP ACTIONS HERE
     ;;
-
   pre_install)
     : ADD PRE INSTALL ACTIONS HERE
     ;;

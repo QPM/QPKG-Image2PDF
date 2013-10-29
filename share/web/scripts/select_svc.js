@@ -4,25 +4,40 @@ app.service('SelectSvc', [
     data = [];
     this.add = function(photo) {
       photo.selected = true;
-      return data.push(photo);
+      data.push(photo);
+      return angular.forEach(photo.album, function(value, key) {
+        return value.selected++;
+      });
     };
     this.del = function(photo) {
       var index;
       index = data.indexOf(photo);
-      if (index > -1) {
-        return data.splice(index, 1)[0].selected = false;
-      }
+      photo.selected = false;
+      data.splice(index, 1);
+      return angular.forEach(photo.album, function(value, key) {
+        return value.selected--;
+      });
     };
     this.clear = function() {
-      return angular.forEach(data.splice(0), function(value, key) {
-        return value.selected = false;
+      return angular.forEach(data.splice(0), function(photo, key) {
+        photo.selected = false;
+        return angular.forEach(photo.album, function(value, key) {
+          return value.selected--;
+        });
       });
     };
     this.fetch = function() {
       return data;
     };
-    return this.length = function() {
+    this.length = function() {
       return data.length;
+    };
+    return this.exchange = function(photo_a, photo_b) {
+      var index_a, index_b;
+      index_a = data.indexOf(photo_a);
+      index_b = data.indexOf(photo_b);
+      data.splice(index_a, 1, photo_b);
+      return data.splice(index_b, 1, photo_a);
     };
   }
 ]);

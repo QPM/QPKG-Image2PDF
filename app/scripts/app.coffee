@@ -27,19 +27,27 @@ app.filter 'layout', () ->
           value.dis_height = size - 5
     return input
 
+app.filter 'lastTo', () ->
+  (input, max) ->
+    num = input.length - max
+    num = 0 if num < 0
+    return input.slice(num).reverse();
+
 app.controller "UserCtrl", ($scope, UserSvc, PhotoSvc) ->
   $scope.user = UserSvc.info()
-  $scope.$watch UserSvc.status, () ->
-    $scope.user = UserSvc.info()
-    PhotoSvc.reset_sid($scope.user.sid) if UserSvc.status() is 'login'
 
   $scope.$watch UserSvc.status, () ->
     $scope.user = UserSvc.info()
 
   $scope.username = null
   $scope.password = null
+  $scope.remember = no
+
+  $scope.toggle_remember = () ->
+    $scope.remember = !$scope.remember
 
   $scope.login = () ->
+    return unless $scope.username and $scope.password
     UserSvc.login $scope.username, $scope.password
 
 app.directive 'ngload', ($parse) ->

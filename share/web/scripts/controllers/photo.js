@@ -1,6 +1,7 @@
-app.controller("PhotoCtrl", function($scope, $routeParams, PhotoSvc, SelectSvc, UserSvc, Tab, Configs) {
-  var listener;
+app.controller("PhotoCtrl", function($scope, $routeParams, $timeout, PhotoSvc, SelectSvc, UserSvc, Tab, Configs) {
+  var listener, run_zoom;
   $scope.items = [];
+  $scope.limit = 0;
   $scope.tab = Tab;
   $scope.selected = SelectSvc.fetch();
   $scope.box = {
@@ -12,13 +13,54 @@ app.controller("PhotoCtrl", function($scope, $routeParams, PhotoSvc, SelectSvc, 
   $scope.toolbar = false;
   $scope.user = UserSvc.info();
   $scope.$watch(UserSvc.status, function() {
-    return $scope.user = UserSvc.info();
+    $scope.user = UserSvc.info();
+    if (UserSvc.status() === 'login') {
+      PhotoSvc.reset_sid($scope.user.sid);
+      switch (Tab) {
+        case 'album':
+          return $scope.items = PhotoSvc.album();
+        case 'selected':
+          return $scope.items = SelectSvc.fetch();
+        case 'albumPhoto':
+          $scope.items = PhotoSvc.photo($routeParams.id);
+          return $scope.album = PhotoSvc.get_album($routeParams.id);
+        default:
+          return $scope.items = PhotoSvc.photo();
+      }
+    }
   });
+  run_zoom = false;
+  $scope.zoom = 50;
+  $scope.zoom_start = function(e) {
+    return run_zoom = true;
+  };
+  $scope.zoom_listener = function(e, focus) {
+    var positionX, range;
+    if (run_zoom !== true && focus !== true) {
+      return;
+    }
+    positionX = e.pageX - $('.zoom .zoom-meso').offset().left;
+    range = $('.zoom .zoom-meso').width();
+    if (positionX < 0) {
+      positionX = 0;
+    }
+    if (positionX > range) {
+      positionX = range;
+    }
+    $scope.zoom = positionX / range * 100;
+    $scope.box.width = $scope.zoom / 100 + 0.5;
+    $scope.box.height = $scope.zoom / 100 + 0.5;
+    return false;
+  };
+  $scope.zoom_end = function(e) {
+    return run_zoom = false;
+  };
   $scope.init = function() {
     Configs.set_step(1, Tab);
     if ($scope.selected.length > 0) {
       $scope.toolbar = true;
     }
+    $('body').attr('class', 'view-photo');
     switch (Tab) {
       case 'album':
         return $scope.box.type = 'album';
@@ -34,16 +76,40 @@ app.controller("PhotoCtrl", function($scope, $routeParams, PhotoSvc, SelectSvc, 
     switch (item.type) {
       case 'photo':
         if (item.selected) {
-          SelectSvc.del(item);
-          angular.forEach(item.album, function(value, key) {
-            return value.selected--;
-          });
-          return item.album;
+          return SelectSvc.del(item);
         } else {
           SelectSvc.add(item);
-          angular.forEach(item.album, function(value, key) {
-            return value.selected++;
+          return $scope.toolbar = true;
+        }
+        break;
+      case 'album':
+        if (item.selected > 0) {
+          return angular.forEach(item.data, function(photo, key) {
+            if (photo.selected) {
+              return SelectSvc.del(photo);
+            }
           });
+        } else {
+          angular.forEach(item.data, function(photo, key) {
+            if (!photo.selected) {
+              return SelectSvc.add(photo);
+            }
+          });
+          return $scope.toolbar = true;
+        }
+    }
+  };
+  $scope.enter = function(item, e) {
+    if ($(e.target).hasClass('checkbox')) {
+      return;
+    }
+    item.hover = false;
+    switch (item.type) {
+      case 'photo':
+        if (item.selected) {
+          return SelectSvc.del(item);
+        } else {
+          SelectSvc.add(item);
           return $scope.toolbar = true;
         }
         break;
@@ -54,8 +120,8 @@ app.controller("PhotoCtrl", function($scope, $routeParams, PhotoSvc, SelectSvc, 
   $scope.clear = function() {
     return SelectSvc.clear();
   };
-  return (listener = function() {
-    var data, height, item, reDisplay, width, _i, _len;
+  (listener = function() {
+    var height, reDisplay, width;
     reDisplay = false;
     width = $('#main').width();
     if (width !== $scope.box.wrap_width) {
@@ -67,24 +133,11 @@ app.controller("PhotoCtrl", function($scope, $routeParams, PhotoSvc, SelectSvc, 
       $scope.box.wrap_height = height;
       reDisplay = true;
     }
-    if ($scope.items.length < 1 && UserSvc.status() === 'login') {
-      switch (Tab) {
-        case 'album':
-          data = PhotoSvc.album(1);
-          break;
-        case 'selected':
-          data = SelectSvc.fetch();
-          break;
-        case 'albumPhoto':
-          data = PhotoSvc.photo(1, $routeParams.id);
-          break;
-        default:
-          data = PhotoSvc.photo(1);
-      }
-      if (data instanceof Array) {
-        for (_i = 0, _len = data.length; _i < _len; _i++) {
-          item = data[_i];
-          $scope.items.push(item);
+    if ($scope.items.length > $scope.limit) {
+      if ($(document).height() - $(window).height() < $(document).scrollTop() + 500) {
+        $scope.limit += 100;
+        if ($scope.limit > $scope.items.length) {
+          $scope.limit = $scope.items.length;
         }
         reDisplay = true;
       }
@@ -92,8 +145,13 @@ app.controller("PhotoCtrl", function($scope, $routeParams, PhotoSvc, SelectSvc, 
     if (!(reDisplay ? $scope.$$phase : void 0)) {
       $scope.$apply();
     }
-    return setTimeout(listener, 1000);
+    return $scope.listen = $timeout(listener, 1000);
   })();
+  return $scope.$on('$locationChangeStart', function() {
+    if ($scope.listen) {
+      return $timeout.cancel($scope.listen);
+    }
+  });
 });
 
 /*

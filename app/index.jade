@@ -6,6 +6,7 @@ html
     title
     meta(name='description', content='')
     meta(name='viewport', content='width=device-width')
+    link(rel="shortcut icon",href="./favicon.ico")
     //if lt IE 9
       script(src='bower_components/es5-shim/es5-shim.js')
       script(src='bower_components/json3/lib/json3.min.js')
@@ -23,32 +24,26 @@ html
     script(src='bower_components/angular-cookies/angular-cookies.js')
     script(src='bower_components/angular-sanitize/angular-sanitize.js')
     script(src='scripts/ezEncode.js')
-  body(ng-app='gruntNgApp')
+  body(ng-app='gruntNgApp',onselectstart="return false")
     .header(ng-controller='UserCtrl')
       #headbar
         .title Image2PDF
-        .user
+        .user(ng-show="user.status=='login'")
           .photo
-          .naem Admin
+          .name {{user.name}}
           .more
-      #login(ng-hide="user.status=='login'")
+      #login(ng-hide="user.status=='login'",ng-class="{failed: user.status=='failed'}")
+        .logo
         form.form-horizontal(ng-submit='login()')
-          .input.input-username
-            .left
-            .right
-            i.icon-user
-            input#username(type='text', placeholder='Username', ng-model="username")
-          .input.input-password
-            .left
-            .right
-            i.icon-lock
-            input#password(type='password', placeholder='Password', ng-model="password")
-          .message(ng-show="user.status=='failed'")
-            span *Invalid username or password
+          .input
+            input.username(type='text', placeholder='Username', ng-model="username")
+          .input
+            input.password(type='password', placeholder='Password', ng-model="password")
           .toolbar
-            label#remember.remember.pull-left
-              | Remember me
-            button#login-submit(type='submit').pull-right SIGN IN
+            .remember(ng-class="{checked: remember}",ng-click="toggle_remember()") Remember me
+            button(type='submit') SIGN IN
+          .message
+            span *Invalid username or password
     .container(ng-view='')
     // build:js scripts/scripts.js
     script(src='scripts/app.js')

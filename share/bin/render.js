@@ -45,14 +45,14 @@ page.open(template+'/index.html', function(status) {
       console.log('Open: '+output_file+' ('+ status +')');
       
       setTimeout(function(){
-        var render_file = target+'.pdf'
-        console.log('Render: '+render_file);
-        output.render(render_file);
+        console.log('Render: '+target+'.temp.pdf');
+        output.render(target+'.temp.pdf');
 
         output.close();
         page.close();
         phantom.exit();
         fs.removeTree(template);
+        fs.move(target+'.temp.pdf',target+'.pdf');
       },1000*images.length+500);
     });
   });

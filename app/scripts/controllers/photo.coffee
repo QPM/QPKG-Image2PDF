@@ -1,8 +1,11 @@
-app.controller "PhotoCtrl", ($scope, $routeParams, PhotoSvc, SelectSvc, UserSvc, Tab, Configs) ->
+app.controller "PhotoCtrl", ($scope, $routeParams, $timeout, PhotoSvc, SelectSvc, UserSvc, Tab, Configs) ->
   $scope.items = []
+  $scope.limit = 0
+
   $scope.tab = Tab
-  # $scope.preview = []
+
   $scope.selected = SelectSvc.fetch()
+
   $scope.box =
     wrap_width: 1000
     wrap_height: 1000
@@ -13,12 +16,43 @@ app.controller "PhotoCtrl", ($scope, $routeParams, PhotoSvc, SelectSvc, UserSvc,
   
   $scope.user = UserSvc.info()
 
+
   $scope.$watch UserSvc.status, () ->
     $scope.user = UserSvc.info()
+    if UserSvc.status() is 'login'
+      PhotoSvc.reset_sid($scope.user.sid)
+      switch Tab
+        when 'album'
+          $scope.items = PhotoSvc.album()
+        when 'selected'
+          $scope.items = SelectSvc.fetch()
+        when 'albumPhoto'
+          $scope.items = PhotoSvc.photo($routeParams.id)
+          $scope.album = PhotoSvc.get_album($routeParams.id)
+        else
+          $scope.items = PhotoSvc.photo()
+
+  run_zoom = no
+  $scope.zoom = 50
+  $scope.zoom_start = (e) ->
+    run_zoom = yes
+  $scope.zoom_listener = (e,focus) ->
+    return if run_zoom isnt yes and focus isnt yes
+    positionX = e.pageX - $('.zoom .zoom-meso').offset().left
+    range = $('.zoom .zoom-meso').width()
+    positionX = 0 if positionX < 0
+    positionX = range if positionX > range
+    $scope.zoom = positionX/range*100
+    $scope.box.width = $scope.zoom / 100 + 0.5
+    $scope.box.height = $scope.zoom / 100 + 0.5
+    return false
+  $scope.zoom_end = (e) ->
+    run_zoom = no
 
   $scope.init = () ->
     Configs.set_step(1, Tab)
     $scope.toolbar = true if $scope.selected.length > 0
+    $('body').attr('class','view-photo')
     switch Tab
       when 'album'
         $scope.box.type = 'album'
@@ -44,14 +78,29 @@ app.controller "PhotoCtrl", ($scope, $routeParams, PhotoSvc, SelectSvc, UserSvc,
       when 'photo'
         if item.selected
           SelectSvc.del(item)
-          angular.forEach item.album, (value, key) -> value.selected--
-          item.album 
         else
           SelectSvc.add(item)
-          angular.forEach item.album, (value, key) -> value.selected++
+          $scope.toolbar = true
+      when 'album'
+        if item.selected > 0
+          angular.forEach item.data, (photo, key) -> SelectSvc.del(photo) if photo.selected
+        else
+          angular.forEach item.data, (photo, key) -> SelectSvc.add(photo) unless photo.selected
+          $scope.toolbar = true
+
+  $scope.enter = (item, e) ->
+    return if $(e.target).hasClass('checkbox')
+    item.hover = off
+    switch item.type
+      when 'photo'
+        if item.selected
+          SelectSvc.del(item)
+        else
+          SelectSvc.add(item)
           $scope.toolbar = true
       when 'album'
         location.hash = '#/albumPhoto/'+item.id
+        
 
   $scope.clear = () ->
     SelectSvc.clear()
@@ -69,21 +118,17 @@ app.controller "PhotoCtrl", ($scope, $routeParams, PhotoSvc, SelectSvc, UserSvc,
       $scope.box.wrap_height = height
       reDisplay = on
 
-    if $scope.items.length < 1 and UserSvc.status() is 'login'
-      switch Tab
-        when 'album'
-          data = PhotoSvc.album(1)
-        when 'selected'
-          data = SelectSvc.fetch()
-        when 'albumPhoto'
-          data = PhotoSvc.photo(1,$routeParams.id)
-        else
-          data = PhotoSvc.photo(1)
-      if data instanceof Array
-        $scope.items.push(item) for item in data
+    if $scope.items.length > $scope.limit
+      if $(document).height()-$(window).height() < $(document).scrollTop() + 500
+        $scope.limit += 100
+        $scope.limit = $scope.items.length if $scope.limit > $scope.items.length
         reDisplay = on
 
     $scope.$apply() unless $scope.$$phase if reDisplay
 
-    setTimeout listener, 1000
+    $scope.listen = $timeout(listener, 1000)
+
   )()
+
+  $scope.$on '$locationChangeStart', () ->
+    $timeout.cancel($scope.listen) if $scope.listen

@@ -6,6 +6,7 @@
     <title></title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width">
+    <link rel="shortcut icon" href="./favicon.ico">
     <!--[if lt IE 9]>
     <script src="bower_components/es5-shim/es5-shim.js"></script>
     <script src="bower_components/json3/lib/json3.min.js"></script>
@@ -26,33 +27,30 @@
     <script src="bower_components/angular-sanitize/angular-sanitize.js"></script>
     <script src="scripts/ezEncode.js"></script>
   </head>
-  <body ng-app="gruntNgApp">
+  <body ng-app="gruntNgApp" onselectstart="return false">
     <div ng-controller="UserCtrl" class="header">
       <div id="headbar">
         <div class="title">Image2PDF</div>
-        <div class="user">
+        <div ng-show="user.status=='login'" class="user">
           <div class="photo"></div>
-          <div class="naem">Admin</div>
+          <div class="name">{{user.name}}</div>
           <div class="more"></div>
         </div>
       </div>
-      <div id="login" ng-hide="user.status=='login'">
+      <div id="login" ng-hide="user.status=='login'" ng-class="{failed: user.status=='failed'}">
+        <div class="logo"></div>
         <form ng-submit="login()" class="form-horizontal">
-          <div class="input input-username">
-            <div class="left"></div>
-            <div class="right"></div><i class="icon-user"></i>
-            <input id="username" type="text" placeholder="Username" ng-model="username">
+          <div class="input">
+            <input type="text" placeholder="Username" ng-model="username" class="username">
           </div>
-          <div class="input input-password">
-            <div class="left"></div>
-            <div class="right"></div><i class="icon-lock"></i>
-            <input id="password" type="password" placeholder="Password" ng-model="password">
+          <div class="input">
+            <input type="password" placeholder="Password" ng-model="password" class="password">
           </div>
-          <div ng-show="user.status=='failed'" class="message"><span>*Invalid username or password</span></div>
           <div class="toolbar">
-            <label id="remember" class="remember pull-left">Remember me</label>
-            <button id="login-submit" type="submit" class="pull-right">SIGN IN</button>
+            <div ng-class="{checked: remember}" ng-click="toggle_remember()" class="remember">Remember me</div>
+            <button type="submit">SIGN IN</button>
           </div>
+          <div class="message"><span>*Invalid username or password</span></div>
         </form>
       </div>
     </div>

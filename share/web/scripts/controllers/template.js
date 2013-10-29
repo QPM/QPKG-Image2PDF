@@ -1,7 +1,17 @@
-app.controller("TemplateCtrl", function($scope, SelectSvc, UserSvc, Configs) {
+app.controller("TemplateCtrl", function($scope, $timeout, SelectSvc, UserSvc, Configs) {
+  var listener;
   $scope.tid = null;
   $scope.progress = null;
   $scope.status = 'output';
+  $scope.page = {
+    total: 1,
+    now: 1
+  };
+  $scope.box = {
+    wrap_width: 1000,
+    wrap_height: 1000
+  };
+  $scope.wait = 0;
   $scope.temps = [
     {
       name: 'temp_a',
@@ -9,6 +19,18 @@ app.controller("TemplateCtrl", function($scope, SelectSvc, UserSvc, Configs) {
     }, {
       name: 'temp_b',
       icon: './templates/temp_b/icon.png'
+    }, {
+      name: 'temp_c',
+      icon: './templates/temp_c/icon.png'
+    }, {
+      name: 'temp_d',
+      icon: './templates/temp_d/icon.png'
+    }, {
+      name: 'temp_e',
+      icon: './templates/temp_e/icon.png'
+    }, {
+      name: 'temp_f',
+      icon: './templates/temp_f/icon.png'
     }
   ];
   $scope.temp = 'temp_a';
@@ -16,6 +38,9 @@ app.controller("TemplateCtrl", function($scope, SelectSvc, UserSvc, Configs) {
   $scope.$watch(UserSvc.status, function() {
     return $scope.user = UserSvc.info();
   });
+  $scope.init = function() {
+    return $('body').attr('class', 'view-template');
+  };
   $scope["break"] = function() {
     return location.hash = '#/' + (Configs.get_step(1) || 'photo');
   };
@@ -28,15 +53,14 @@ app.controller("TemplateCtrl", function($scope, SelectSvc, UserSvc, Configs) {
       if ($scope.status === 'download') {
         return window.open('./api.php?action=download&tid=' + $scope.tid);
       } else {
-        return alert('PDF製作中');
+        return alert('Wait for progress...');
       }
     } else {
       images = [];
       $(SelectSvc.fetch()).each(function() {
         return images.push('http://127.0.0.1' + this.output);
       });
-      console.log(images);
-      $scope.status = 'progress';
+      $scope.status = 'wait';
       return $.ajax({
         type: "POST",
         url: "./api.php?action=output&template=" + $scope.temp,
@@ -46,55 +70,121 @@ app.controller("TemplateCtrl", function($scope, SelectSvc, UserSvc, Configs) {
         },
         dataType: 'json'
       }).done(function(res) {
-        var listen;
         $scope.tid = res.tid;
-        console.log(res.tid);
-        return (listen = function() {
+        return $scope.wait = images.length + 3;
+      });
+    }
+  };
+  $scope.pageLoad = function(e) {
+    var doc, images, preview, temp;
+    images = SelectSvc.fetch().slice(0);
+    preview = $(e.target).contents();
+    temp = $('.document', preview).detach();
+    while (images.length > 0) {
+      doc = temp.clone();
+      $('.image', doc).each(function() {
+        var image;
+        image = images.shift();
+        if (image != null) {
+          $(this).css('background-image', "url('" + image.src + "')");
+          return $(this).data('image', image);
+        } else {
+          return $(this).css('background-image', null);
+        }
+      });
+      $('body', preview).append(doc, $('<div />').css({
+        'page-break-inside': 'avoid',
+        'background': '#C1C1C1',
+        'height': '50px',
+        'border': '1px solid #C1C1C1'
+      }));
+    }
+    return $('body', preview).on('mousedown', '.image', function(e) {
+      var oDom, oImg;
+      oDom = e.target;
+      oImg = $(e.target).data('image');
+      if (!oImg) {
+        return;
+      }
+      $('body', preview).on('mouseenter', '.image', function(e) {
+        var tImg;
+        tImg = $(e.target).data('image');
+        if (!tImg) {
+          return;
+        }
+        $(e.target).css('background-image', "url('" + oImg.src + "')");
+        return $(oDom).css('background-image', "url('" + tImg.src + "')");
+      });
+      $('body', preview).on('mouseleave', '.image', function(e) {
+        var tImg;
+        tImg = $(e.target).data('image');
+        if (!tImg) {
+          return;
+        }
+        $(e.target).css('background-image', "url('" + tImg.src + "')");
+        return $(oDom).css('background-image', "url('" + oImg.src + "')");
+      });
+      $('body', preview).on('mouseleave mouseup', function(e) {
+        var tImg;
+        $('body', preview).off('mouseenter mouseleave mouseup');
+        tImg = $(e.target).data('image');
+        if (!tImg) {
+          return;
+        }
+        if (e.type === 'mouseup') {
+          $(e.target).data('image', oImg);
+          $(oDom).data('image', tImg);
+          return SelectSvc.exchange(oImg, tImg);
+        }
+      });
+      return false;
+    });
+  };
+  (listener = function() {
+    var height, listen, reDisplay;
+    reDisplay = false;
+    height = $(window).height();
+    if (height !== $scope.box.wrap_height) {
+      $scope.box.wrap_height = height;
+      $('.iframe').css('transform', 'scale(' + ((height - 41 - 43) / 1123) + ')');
+      reDisplay = true;
+    }
+    if ($scope.status === 'wait') {
+      if ($scope.wait > 0) {
+        $scope.wait--;
+        reDisplay = true;
+      } else {
+        $scope.status = 'progress';
+        (listen = function() {
+          $scope.wait = null;
           return $.ajax({
             type: "GET",
             url: "./api.php?action=progress&tid=" + $scope.tid,
             cache: false,
             dataType: 'json'
           }).always(function(res, status) {
-            if (status === 'success') {
-              $scope.progress = parseInt(res.progress, 10);
-              if ($scope.progress >= 100) {
-                $scope.status = 'download';
-              } else {
-                setTimeout(listen, 1000);
+            if (status === 'success' && parseInt(res.progress, 10) >= 100) {
+              $scope.status = 'download';
+              if (reDisplay && !$scope.$$phase) {
+                return $scope.$apply();
               }
-              return $scope.$apply();
             } else {
               return setTimeout(listen, 1000);
             }
           });
         })();
-      });
+      }
     }
-  };
-  return $scope.pageLoad = function(e) {
-    var doc, images, preview, temp, _results;
-    console.log('pageLoad');
-    images = SelectSvc.fetch().slice(0);
-    console.log(images);
-    preview = $(e.target).contents();
-    temp = $('.document', preview).detach();
-    _results = [];
-    while (images.length > 0) {
-      doc = temp.clone();
-      $('.image', doc).css('background-image', function(index) {
-        var image;
-        image = images.shift();
-        if (image != null) {
-          return "url('" + image.src + "')";
-        } else {
-          return null;
-        }
-      });
-      _results.push($('body', preview).append(doc, $('<div />').css('page-break-inside', 'avoid')));
+    if (reDisplay && !$scope.$$phase) {
+      $scope.$apply();
     }
-    return _results;
-  };
+    return $scope.listen = $timeout(listener, 1000);
+  })();
+  return $scope.$on('$locationChangeStart', function() {
+    if ($scope.listen) {
+      return $timeout.cancel($scope.listen);
+    }
+  });
 });
 
 /*

@@ -1,16 +1,17 @@
 html
   body
-    .wrap(ng-show="user.status=='login'")
+    .wrap(ng-show="user.status=='login'",ng-init="init()")
       #menu(ng-init="init()")
-        a.back(ng-click="break()") Back
+        a.back(ng-click="break()"): span Back
       #toolbar
         .templates
           .item(style="background-image:url({{item.icon}});",ng-repeat="item in temps",ng-class="{active: item.name==temp}",ng-click="select(item)",ng-mouseover="item.hover=true",ng-mouseleave="item.hover=false")
         .next
           a.btn_blue(ng-click="output()", ng-switch="status")
             span(ng-switch-when="download") Download
+            span(ng-switch-when="wait") Wait {{wait}}s
             span(ng-switch-when="progress") Progress...
             span(ng-switch-when="output") Output PDF
       #main
         .iframe
-          iframe(src="./templates/{{temp}}/index.html",ngload="pageLoad($event)",scrolling="no")
+          iframe(src="./templates/{{temp}}/index.html",ngload="pageLoad($event)",scrolling="yes")
