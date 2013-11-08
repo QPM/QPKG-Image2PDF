@@ -1,0 +1,30 @@
+body
+  background: #FFF
+  padding: 0px
+  margin: 0px
+
+$page_width=210mm - 4mm
+$page_height=297mm - 4mm
+
+.document
+  width: $page_width + 4mm
+  height: $page_height + 4mm
+  position: relative
+
+.image
+  background-size: cover
+  background-position: center center
+  border: none
+  position: absolute
+  float: left
+  $w = (($page_width - 3mm) / 2)
+  $h = (($page_height - 3mm) / 2)
+  &:nth-child(1), &:nth-child(2)
+    width: ($w * 2) + 3mm
+    height: $h
+  &:nth-child(1)
+    top: 2mm
+    left: 2mm
+  &:nth-child(2)
+    top: 2mm + $h + 3mm
+    left: 2mm

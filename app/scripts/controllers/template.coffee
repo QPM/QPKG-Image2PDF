@@ -15,6 +15,18 @@ app.controller "TemplateCtrl", ($scope, $timeout, SelectSvc, UserSvc, Configs) -
 
   $scope.temps = [
     {
+      name: 'base_a'
+      icon: './templates/base_a/icon.png'
+    },
+    {
+      name: 'base_b'
+      icon: './templates/base_b/icon.png'
+    },
+    {
+      name: 'base_c'
+      icon: './templates/base_c/icon.png'
+    },
+    {
       name: 'temp_a'
       icon: './templates/temp_a/icon.png'
     },
@@ -96,6 +108,16 @@ app.controller "TemplateCtrl", ($scope, $timeout, SelectSvc, UserSvc, Configs) -
       oDom = e.target
       oImg = $(e.target).data 'image'
       return unless oImg
+      oDom_Width = $(oDom).width()
+      oDom_Height = $(oDom).height()
+      $(oDom).on 'mousemove', (e) ->
+        console.log oImg.width
+        console.log oImg.height
+        console.log $(oDom).css('backgroundPosition')
+        console.log $(oDom).css('background-position', ((e.offsetX / oDom_Width) * 100) + '% ' + ((e.offsetY / oDom_Height) * 100) + '%')
+        
+        
+        console.log e
       $('body',preview).on 'mouseenter', '.image', (e)->
         tImg = $(e.target).data('image')
         return unless tImg
@@ -108,6 +130,7 @@ app.controller "TemplateCtrl", ($scope, $timeout, SelectSvc, UserSvc, Configs) -
         $(oDom).css 'background-image', "url('"+oImg.src+"')"
       $('body',preview).on 'mouseleave mouseup', (e)->
         $('body',preview).off('mouseenter mouseleave mouseup')
+        $(oDom).off('mousemove')
         
         tImg = $(e.target).data('image')
         return unless tImg
