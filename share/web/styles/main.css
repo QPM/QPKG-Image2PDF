@@ -55,7 +55,7 @@ body.view-template{background:#c1c1c1}
 #toolbar .selected .item{width:80px;height:80px;margin-top:10px;background:url("../images/selected_icon.png");-webkit-background-size:cover;-moz-background-size:cover;background-size:cover;position:relative;float:left;}
 #toolbar .selected .item:nth-child(2n){margin-left:10px}
 #toolbar .selected .item .checkbox{width:24px;height:24px;position:absolute;left:3px;top:3px}
-#toolbar .templates{overflow:hidden;margin:0 auto;width:152px;height:343px;position:relative;}
+#toolbar .templates{overflow-x:hidden;overflow-x:auto;margin:0 auto;width:172px;max-height:349px;position:relative;}
 #toolbar .templates .item{width:71px;margin-top:10px;-webkit-background-size:cover;-moz-background-size:cover;background-size:cover;cursor:pointer;float:left;}
 #toolbar .templates .item:nth-child(2n){margin-left:10px}
 #toolbar .next{width:100%;position:absolute;bottom:84px;left:0;padding-bottom:5px}
