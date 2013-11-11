@@ -67,7 +67,11 @@ app.controller("TemplateCtrl", function($scope, $timeout, SelectSvc, UserSvc, Co
     } else {
       images = [];
       $(SelectSvc.fetch()).each(function() {
-        return images.push('http://127.0.0.1' + this.output);
+        return images.push({
+          src: 'http://127.0.0.1' + this.output,
+          x: this.x,
+          y: this.y
+        });
       });
       $scope.status = 'wait';
       return $.ajax({
@@ -80,7 +84,7 @@ app.controller("TemplateCtrl", function($scope, $timeout, SelectSvc, UserSvc, Co
         dataType: 'json'
       }).done(function(res) {
         $scope.tid = res.tid;
-        return $scope.wait = images.length + 3;
+        return $scope.wait = images.length * 2 + 3;
       });
     }
   };
@@ -118,11 +122,7 @@ app.controller("TemplateCtrl", function($scope, $timeout, SelectSvc, UserSvc, Co
       oDom_Width = $(oDom).width();
       oDom_Height = $(oDom).height();
       $(oDom).on('mousemove', function(e) {
-        console.log(oImg.width);
-        console.log(oImg.height);
-        console.log($(oDom).css('backgroundPosition'));
-        console.log($(oDom).css('background-position', ((e.offsetX / oDom_Width) * 100) + '% ' + ((e.offsetY / oDom_Height) * 100) + '%'));
-        return console.log(e);
+        return $(oDom).css('backgroundPosition', (100 - (e.offsetX / oDom_Width) * 100) + '% ' + (100 - (e.offsetY / oDom_Height) * 100) + '%');
       });
       $('body', preview).on('mouseenter', '.image', function(e) {
         var tImg;
@@ -153,7 +153,14 @@ app.controller("TemplateCtrl", function($scope, $timeout, SelectSvc, UserSvc, Co
         if (e.type === 'mouseup') {
           $(e.target).data('image', oImg);
           $(oDom).data('image', tImg);
-          return SelectSvc.exchange(oImg, tImg);
+          SelectSvc.exchange(oImg, tImg);
+          if ($(e.target).is(oDom)) {
+            oImg.x = 100 - (e.offsetX / oDom_Width) * 100;
+            return oImg.y = 100 - (e.offsetY / oDom_Height) * 100;
+          } else {
+            $(oDom).css('backgroundPosition', '50% 50%');
+            return $(e.target).css('backgroundPosition', '50% 50%');
+          }
         }
       });
       return false;

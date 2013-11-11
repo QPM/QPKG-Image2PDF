@@ -28,7 +28,11 @@ app.service('PhotoSvc', [
       var id, obj;
       id = $('id', photo).text();
       if (!photo_lite[id]) {
-        photo_lite[id] = {};
+        photo_lite[id] = {
+          x: 50,
+          y: 50,
+          zoom: 1
+        };
       }
       obj = photo_lite[id];
       obj.id = id;

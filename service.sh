@@ -11,6 +11,9 @@ case "$1" in
     if [ -f "${SYS_QPKG_DIR}/lib/libX11.so.6" ]; then 
       cp $SYS_QPKG_DIR/lib/libX11.so.6 /usr/lib/libX11.so.6
     fi 
+    if [ -f "${SYS_QPKG_DIR}/lib/libXau.so.6" ]; then 
+      cp $SYS_QPKG_DIR/lib/libXau.so.6 /usr/lib/libXau.so.6
+    fi 
     ;;
 
   stop)

@@ -26,7 +26,7 @@ app.service 'PhotoSvc', [ () ->
 
   get_photo_from_dblite = (photo, album) ->
     id = $('id', photo).text()
-    photo_lite[id] = {} unless photo_lite[id]
+    photo_lite[id] = {x:50, y:50, zoom:1} unless photo_lite[id]
     obj = photo_lite[id]
     obj.id = id
     obj.type = 'photo'

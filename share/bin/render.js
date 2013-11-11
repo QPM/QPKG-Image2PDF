@@ -25,11 +25,14 @@ page.open(template+'/index.html', function(status) {
       var temp = $('.document').detach();
       while(images.length>0){
         var doc = temp.clone();
-        $('.image',doc).css('background-image',function(index){
+        $('.image',doc).each(function(index){
           image = images.shift();
           console.log(image);
-          return image ? "url('"+image+"')" : '';
-        })
+          if(image){
+            $(this).css('background-image', "url('"+image.src+"')");
+            $(this).css('background-position', image.x+'% '+image.y+'%');
+          }
+        });
         doc.appendTo('body');
         $('<div />').css('page-break-inside','avoid').appendTo('body');
       }
@@ -53,7 +56,7 @@ page.open(template+'/index.html', function(status) {
         phantom.exit();
         fs.removeTree(template);
         fs.move(target+'.temp.pdf',target+'.pdf');
-      },1000*images.length+500);
+      },2000*images.length+500);
     });
   });
 });

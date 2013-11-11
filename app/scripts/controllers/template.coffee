@@ -73,7 +73,11 @@ app.controller "TemplateCtrl", ($scope, $timeout, SelectSvc, UserSvc, Configs) -
         alert('Wait for progress...')
     else
       images = []
-      $(SelectSvc.fetch()).each () -> images.push('http://127.0.0.1'+@output)
+      $(SelectSvc.fetch()).each () -> 
+        images.push
+          src: 'http://127.0.0.1'+@output
+          x: @x
+          y: @y
       $scope.status = 'wait'
       $.ajax({
         type: "POST"
@@ -83,7 +87,7 @@ app.controller "TemplateCtrl", ($scope, $timeout, SelectSvc, UserSvc, Configs) -
         dataType: 'json'
       }).done (res) ->
         $scope.tid = res.tid
-        $scope.wait = images.length + 3
+        $scope.wait = images.length*2 + 3
 
   $scope.pageLoad = (e) ->
     images = SelectSvc.fetch().slice(0)
@@ -111,13 +115,11 @@ app.controller "TemplateCtrl", ($scope, $timeout, SelectSvc, UserSvc, Configs) -
       oDom_Width = $(oDom).width()
       oDom_Height = $(oDom).height()
       $(oDom).on 'mousemove', (e) ->
-        console.log oImg.width
-        console.log oImg.height
-        console.log $(oDom).css('backgroundPosition')
-        console.log $(oDom).css('background-position', ((e.offsetX / oDom_Width) * 100) + '% ' + ((e.offsetY / oDom_Height) * 100) + '%')
-        
-        
-        console.log e
+        # console.log oImg.width
+        # console.log oImg.height
+        # console.log $(oDom).css('backgroundPosition')
+        $(oDom).css('backgroundPosition', (100 - (e.offsetX / oDom_Width) * 100) + '% ' + (100 - (e.offsetY / oDom_Height) * 100) + '%')
+        # console.log e
       $('body',preview).on 'mouseenter', '.image', (e)->
         tImg = $(e.target).data('image')
         return unless tImg
@@ -139,6 +141,13 @@ app.controller "TemplateCtrl", ($scope, $timeout, SelectSvc, UserSvc, Configs) -
           $(e.target).data 'image', oImg
           $(oDom).data 'image', tImg
           SelectSvc.exchange oImg, tImg
+
+          if $(e.target).is(oDom)
+            oImg.x = (100 - (e.offsetX / oDom_Width) * 100)
+            oImg.y = (100 - (e.offsetY / oDom_Height) * 100)
+          else
+            $(oDom).css('backgroundPosition', '50% 50%')
+            $(e.target).css('backgroundPosition', '50% 50%')
 
       return false
 
