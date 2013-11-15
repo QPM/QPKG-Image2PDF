@@ -109,21 +109,22 @@ app.controller "TemplateCtrl", ($scope, $timeout, SelectSvc, UserSvc, Configs) -
         'border': '1px solid #C1C1C1'
       })
     $('body',preview).on 'mousewheel', '.image', (e, delta, deltaX, deltaY)->
-      e.preventDefault()
-      img = $(e.target).data 'image'
-      scale = parseInt($(e.target).css('background-size'))
-      unless scale > 0
-        scale_width = $(e.target).width() / img.width
-        scale_height = $(e.target).height() / (img.height * scale_width)
-        if scale_height > 1
-          scale = scale_height * 100
-        else
-          scale = scale_width * 100
-        img.min_scale = scale
-      scale += delta
-      console.log img.min_scale
-      scale = img.min_scale if scale < img.min_scale
-      $(e.target).css('background-size', scale+'%')
+      # 滾動縮放大小
+      # e.preventDefault()
+      # img = $(e.target).data 'image'
+      # scale = parseInt($(e.target).css('background-size'))
+      # unless scale > 0
+      #   scale_width = $(e.target).width() / img.width
+      #   scale_height = $(e.target).height() / (img.height * scale_width)
+      #   if scale_height > 1
+      #     scale = scale_height * 100
+      #   else
+      #     scale = scale_width * 100
+      #   img.min_scale = scale
+      # scale += delta
+      # console.log img.min_scale
+      # scale = img.min_scale if scale < img.min_scale
+      # $(e.target).css('background-size', scale+'%')
     $('body',preview).on 'mousedown', '.image', (e)->
       oDom = e.target
       oImg = $(e.target).data 'image'
