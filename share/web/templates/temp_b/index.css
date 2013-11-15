@@ -1,6 +1,6 @@
 body{background:#fff;padding:0;margin:0}
 .document{width:210mm;height:297mm;position:relative}
-.image{background-size:cover;background-position:center center;border:none;position:absolute;float:left;}
+.image{background-size:cover;background-position:center center;background-repeat:no-repeat;border:none;position:absolute;float:left;}
 .image:nth-child(1){top:2mm;left:2mm;width:206mm;height:145mm}
 .image:nth-child(2){top:150mm;left:2mm;width:101.5mm;height:145mm}
 .image:nth-child(3){top:150mm;left:106.5mm;width:101.5mm;height:145mm}

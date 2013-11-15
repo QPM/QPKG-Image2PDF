@@ -108,18 +108,49 @@ app.controller "TemplateCtrl", ($scope, $timeout, SelectSvc, UserSvc, Configs) -
         'height': '50px'
         'border': '1px solid #C1C1C1'
       })
+    $('body',preview).on 'mousewheel', '.image', (e, delta, deltaX, deltaY)->
+      e.preventDefault()
+      img = $(e.target).data 'image'
+      scale = parseInt($(e.target).css('background-size'))
+      unless scale > 0
+        scale_width = $(e.target).width() / img.width
+        scale_height = $(e.target).height() / (img.height * scale_width)
+        if scale_height > 1
+          scale = scale_height * 100
+        else
+          scale = scale_width * 100
+        img.min_scale = scale
+      scale += delta
+      console.log img.min_scale
+      scale = img.min_scale if scale < img.min_scale
+      $(e.target).css('background-size', scale+'%')
     $('body',preview).on 'mousedown', '.image', (e)->
       oDom = e.target
       oImg = $(e.target).data 'image'
       return unless oImg
       oDom_Width = $(oDom).width()
       oDom_Height = $(oDom).height()
+      mouse =
+        X: e.offsetX
+        Y: e.offsetY
       $(oDom).on 'mousemove', (e) ->
-        # console.log oImg.width
-        # console.log oImg.height
-        # console.log $(oDom).css('backgroundPosition')
-        $(oDom).css('backgroundPosition', (100 - (e.offsetX / oDom_Width) * 100) + '% ' + (100 - (e.offsetY / oDom_Height) * 100) + '%')
-        # console.log e
+        # offset =
+        #   X: e.offsetX - mouse.X
+        #   Y: e.offsetY - mouse.Y
+        # background = /([0-9]+)% ([0-9]+)%/.exec($(oDom).css('background-position'))
+        # if background
+        #   pos =
+        #     X: background[1]
+        #     Y: background[2]
+        # else
+        #   pos =
+        #     X: 50
+        #     Y: 50
+
+        # console.log position
+        $(oDom).css('background-position', (100 - (e.offsetX / oDom_Width) * 100) + '% ' + (100 - (e.offsetY / oDom_Height) * 100) + '%')
+        # mouse.X = e.offsetX
+        # mouse.Y = e.offsetY
       $('body',preview).on 'mouseenter', '.image', (e)->
         tImg = $(e.target).data('image')
         return unless tImg

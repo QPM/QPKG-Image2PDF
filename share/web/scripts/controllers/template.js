@@ -112,8 +112,30 @@ app.controller("TemplateCtrl", function($scope, $timeout, SelectSvc, UserSvc, Co
         'border': '1px solid #C1C1C1'
       }));
     }
+    $('body', preview).on('mousewheel', '.image', function(e, delta, deltaX, deltaY) {
+      var img, scale, scale_height, scale_width;
+      e.preventDefault();
+      img = $(e.target).data('image');
+      scale = parseInt($(e.target).css('background-size'));
+      if (!(scale > 0)) {
+        scale_width = $(e.target).width() / img.width;
+        scale_height = $(e.target).height() / (img.height * scale_width);
+        if (scale_height > 1) {
+          scale = scale_height * 100;
+        } else {
+          scale = scale_width * 100;
+        }
+        img.min_scale = scale;
+      }
+      scale += delta;
+      console.log(img.min_scale);
+      if (scale < img.min_scale) {
+        scale = img.min_scale;
+      }
+      return $(e.target).css('background-size', scale + '%');
+    });
     return $('body', preview).on('mousedown', '.image', function(e) {
-      var oDom, oDom_Height, oDom_Width, oImg;
+      var mouse, oDom, oDom_Height, oDom_Width, oImg;
       oDom = e.target;
       oImg = $(e.target).data('image');
       if (!oImg) {
@@ -121,8 +143,12 @@ app.controller("TemplateCtrl", function($scope, $timeout, SelectSvc, UserSvc, Co
       }
       oDom_Width = $(oDom).width();
       oDom_Height = $(oDom).height();
+      mouse = {
+        X: e.offsetX,
+        Y: e.offsetY
+      };
       $(oDom).on('mousemove', function(e) {
-        return $(oDom).css('backgroundPosition', (100 - (e.offsetX / oDom_Width) * 100) + '% ' + (100 - (e.offsetY / oDom_Height) * 100) + '%');
+        return $(oDom).css('background-position', (100 - (e.offsetX / oDom_Width) * 100) + '% ' + (100 - (e.offsetY / oDom_Height) * 100) + '%');
       });
       $('body', preview).on('mouseenter', '.image', function(e) {
         var tImg;
