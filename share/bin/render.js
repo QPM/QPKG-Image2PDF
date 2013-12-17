@@ -2,6 +2,7 @@
 var system = require('system'),
     template = system.args[1],
     target = system.args[2],
+    type = system.args[3] || 'pdf',
     web = require('webpage'),
     system = require('system'),
     fs = require('fs');
@@ -27,8 +28,10 @@ page.open(template+'/index.html', function(status) {
   //  載入 jquery library
   page.includeJs('http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js', function(){
     // page.evaluate 在 page object，執行javascript
-    page.evaluate(function(images){
+    page.evaluate(function(args){
       // 把template的sample DOM截取出來
+      var images = args[0];
+      var type = args[1];
       var temp = $('.document').detach();
       // 跑images list迴圈
       while(images.length>0){
@@ -46,10 +49,11 @@ page.open(template+'/index.html', function(status) {
           }
         });
         doc.appendTo('body');
+        if(type=='png') return;
         // append分頁符號
         $('<div />').css('page-break-inside','avoid').appendTo('body');
       }
-    },images);
+    }, [images,type]);
 
     // 把template的index.html存入output.html
     var output_file = template+'/output.html';
@@ -64,9 +68,9 @@ page.open(template+'/index.html', function(status) {
       console.log('Open: '+output_file+' ('+ status +')');
       // 倒數計時 拍照(Render)
       setTimeout(function(){
-        console.log('Render: '+target+'.temp.pdf');
+        console.log('Render: '+target+'.temp.'+type);
         // render成PDF
-        output.render(target+'.temp.pdf');
+        output.render(target+'.temp.'+type);
 
         // 記憶體釋放
         output.close();
@@ -75,7 +79,7 @@ page.open(template+'/index.html', function(status) {
         // 刪除template
         fs.removeTree(template);
         // 把pdf檔名從.temp.pdf改成.pdf
-        fs.move(target+'.temp.pdf',target+'.pdf');
+        fs.move(target+'.temp.'+type,target+'.'+type);
       },2000*images.length+500);
     });
   });

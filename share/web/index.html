@@ -28,10 +28,11 @@
     <script src="bower_components/angular-sanitize/angular-sanitize.js"></script>
     <script src="scripts/ezEncode.js"></script>
   </head>
-  <body ng-app="gruntNgApp" onselectstart="return false">
+  <body ng-app="gruntNgApp" onselectstart="return false" ng-keydown="keyman($event)">
+    <div id="tip" ng-show="tip">{{tip}}</div>
     <div ng-controller="UserCtrl" class="header">
       <div id="headbar">
-        <div class="title">Image2PDF</div>
+        <div class="title">{{title}}</div>
         <div ng-show="user.status=='login'" class="user">
           <div class="photo"></div>
           <div class="name">{{user.name}}</div>

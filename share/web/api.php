@@ -8,13 +8,14 @@
       break;
     case 'output':
       $template = get_query('template');
+      $type = get_query('type');
       if(!$template) $template = 'temp_a';
       $tid = time();
       $target = dirname(__DIR__) . '/output/' . $tid . '.json';
       $source = __DIR__ . '/templates/' . $template;
       file_put_contents($target, json_encode($_POST['images']));
       $bin = dirname(__DIR__) . '/bin';
-      passthru($bin.'/phantomjs '.$bin.'/render.js '.$source.' '.$target.' > /dev/null &');
+      passthru($bin.'/phantomjs '.$bin.'/render.js '.$source.' '.$target.' '.$type.' > /dev/null &');
       echo json_encode(array(
         'tid' => $tid
       ));
@@ -26,6 +27,10 @@
         header('Content-disposition: attachment; filename='.$tid.'.pdf');
         header('Content-type: application/pdf');
         readfile($target.'.pdf');
+      }else if(file_exists($target.'.png')){
+        header('Content-disposition: attachment; filename='.$tid.'.png');
+        header('Content-type: image/png');
+        readfile($target.'.png');
       }else if(file_exists($target.'.json')){
         header('HTTP/1.0 202 Accepted', true, 202);
         echo json_encode(array(
@@ -39,7 +44,7 @@
     case 'progress':
       $tid = get_query('tid');
       $target = dirname(__DIR__) . '/output/' . $tid;
-      if(file_exists($target.'.pdf')){
+      if(file_exists($target.'.pdf') or file_exists($target.'.png')){
         echo json_encode(array(
           'code' => 200,
           'progress' => 100,

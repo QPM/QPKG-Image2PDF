@@ -57,6 +57,13 @@ app.directive 'ngload', ($parse) ->
       scope.$apply () ->
         fn(scope, {$event:event});
 
+app.directive 'ngKeydown', ($parse) ->
+  (scope, element, attrs) ->
+    fn = $parse(attrs.ngKeydown);
+    $(element).on 'keydown', (event) ->
+      scope.$apply () ->
+        fn(scope, {$event:event});
+
 app.config ($routeProvider, $httpProvider) ->
   $routeProvider
   .when("/photo",
@@ -90,3 +97,30 @@ app.config ($routeProvider, $httpProvider) ->
   .otherwise redirectTo: "/photo"
 
   delete $httpProvider.defaults.headers.common['X-Requested-With']
+
+app.run ($rootScope) ->
+  keys = [38,38,40,40,37,39,37,39,66,65]
+  key_str =
+    38: '↑'
+    40: '↓'
+    37: '←'
+    39: '→'
+    65: 'A'
+    66: 'B'
+  key_index = 0
+  $rootScope.title = 'Image2PDF'
+  $rootScope.tip = ''
+  $rootScope.out_type = 'pdf'
+  $rootScope.keyman = ($e) ->
+    if keys[key_index] is parseInt($e.keyCode)
+      $rootScope.tip = $rootScope.tip+key_str[keys[key_index]]
+      key_index++
+    else
+      $rootScope.tip = ''
+      key_index = 0
+    if key_index >= keys.length
+      $rootScope.title = 'PinPin'
+      $rootScope.out_type = 'png'
+      $rootScope.tip = ''
+      key_index = 0      
+  return on

@@ -25,10 +25,11 @@ html
     script(src='bower_components/angular-cookies/angular-cookies.js')
     script(src='bower_components/angular-sanitize/angular-sanitize.js')
     script(src='scripts/ezEncode.js')
-  body(ng-app='gruntNgApp',onselectstart="return false")
+  body(ng-app='gruntNgApp',onselectstart="return false",ng-keydown="keyman($event)")
+    #tip(ng-show="tip") {{tip}}
     .header(ng-controller='UserCtrl')
       #headbar
-        .title Image2PDF
+        .title {{title}}
         .user(ng-show="user.status=='login'")
           .photo
           .name {{user.name}}

@@ -83,6 +83,20 @@ app.directive('ngload', function($parse) {
   };
 });
 
+app.directive('ngKeydown', function($parse) {
+  return function(scope, element, attrs) {
+    var fn;
+    fn = $parse(attrs.ngKeydown);
+    return $(element).on('keydown', function(event) {
+      return scope.$apply(function() {
+        return fn(scope, {
+          $event: event
+        });
+      });
+    });
+  };
+});
+
 app.config(function($routeProvider, $httpProvider) {
   $routeProvider.when("/photo", {
     templateUrl: "views/photo.html",
@@ -123,6 +137,39 @@ app.config(function($routeProvider, $httpProvider) {
     redirectTo: "/photo"
   });
   return delete $httpProvider.defaults.headers.common['X-Requested-With'];
+});
+
+app.run(function($rootScope) {
+  var key_index, key_str, keys;
+  keys = [38, 38, 40, 40, 37, 39, 37, 39, 66, 65];
+  key_str = {
+    38: '↑',
+    40: '↓',
+    37: '←',
+    39: '→',
+    65: 'A',
+    66: 'B'
+  };
+  key_index = 0;
+  $rootScope.title = 'Image2PDF';
+  $rootScope.tip = '';
+  $rootScope.out_type = 'pdf';
+  $rootScope.keyman = function($e) {
+    if (keys[key_index] === parseInt($e.keyCode)) {
+      $rootScope.tip = $rootScope.tip + key_str[keys[key_index]];
+      key_index++;
+    } else {
+      $rootScope.tip = '';
+      key_index = 0;
+    }
+    if (key_index >= keys.length) {
+      $rootScope.title = 'PinPin';
+      $rootScope.out_type = 'png';
+      $rootScope.tip = '';
+      return key_index = 0;
+    }
+  };
+  return true;
 });
 
 /*

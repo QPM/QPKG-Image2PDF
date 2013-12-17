@@ -1,4 +1,4 @@
-app.controller("TemplateCtrl", function($scope, $timeout, SelectSvc, UserSvc, Configs) {
+app.controller("TemplateCtrl", function($scope, $rootScope, $timeout, SelectSvc, UserSvc, Configs) {
   var listener;
   $scope.tid = null;
   $scope.progress = null;
@@ -76,7 +76,7 @@ app.controller("TemplateCtrl", function($scope, $timeout, SelectSvc, UserSvc, Co
       $scope.status = 'wait';
       return $.ajax({
         type: "POST",
-        url: "./api.php?action=output&template=" + $scope.temp,
+        url: "./api.php?action=output&template=" + $scope.temp + "&type=" + $rootScope.out_type,
         cache: false,
         data: {
           images: images

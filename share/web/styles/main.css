@@ -81,3 +81,4 @@ body.view-template{background:#c1c1c1}
 #main .item.type-album .title,#main .item.type-album .count{display:block}
 #main .item.type-album.hover .checkbox{display:block}
 #main .item.type-album.active .selected,#main .item.type-album.active .checkbox{display:block}
+#tip{position:fixed;left:0;bottom:0;padding:6px;z-index:10;background:rgba(255,255,255,0.75)}
